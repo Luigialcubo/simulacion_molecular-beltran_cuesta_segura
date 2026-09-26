@@ -39,11 +39,9 @@ void step_runge_kutta2(Particle1D *part, double eta, double h) {
     double g_p2 = -eta * (p_n + h * g_p1) - K_SPRING * (x_n + h * f_x1);
     
     // Actualización de variables (Promedio de las 2 etapas + Ruido)
-    double x_next = x_n + 0.5 * h * (f_x1 + f_x2);
-    double p_next = p_n + 0.5 * h * (g_p1 + g_p2) + Z_amp;
-    
-    part->x = x_next;
-    part->p = p_next;
+    part->x = x_n + 0.5 * h * (f_x1 + f_x2);
+    part->p = p_n + 0.5 * h * (g_p1 + g_p2) + Z_amp;
+
 }
 
 void step_verlet_gjf(Particle1D *part, double eta, double h) {

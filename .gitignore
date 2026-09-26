@@ -53,3 +53,12 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Archivos y carpetas de configuración de Visual Studio
+.vs/
+*.slnx
+*.user
+Debug/
+Release/
+x64/
+x86/
