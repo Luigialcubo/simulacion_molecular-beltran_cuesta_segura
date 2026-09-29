@@ -8,7 +8,7 @@
 #define K_SPRING 1.0
 #define KB_T 1.0
 #define PI 3.141592653589793238
-#define FLAG 1 //Método empleado (Euler-Maruyama (flag=0), Runge-Kutta (flag=1), Verlet explicito(flag=2).
+#define FLAG 1 //Método empleado (Euler-Maruyama (flag=0), Runge-Kutta (flag=1), Verlet explicito(flag=2)).
 
 //Estado de una particula en una dimension
 typedef struct {

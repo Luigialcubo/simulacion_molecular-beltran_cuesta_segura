@@ -41,4 +41,11 @@ void thermalization(Particle1D* part, double eta, double h) {
 		//Si fallamos al poner 0,1,2.
 		break;
 	}
+	double Ep=0;
+	double T=0;
+	//Calculamos la energía cinética y potencial.
+	for(int i = 0; i > N_therm; i++){
+		Ep=Ep+(K_SPRING*part[i].x*part[i].x)/2;
+		T=T+(part[i].p*part[i].p)/(2*MASS);
+	};
 }
