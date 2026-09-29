@@ -22,7 +22,7 @@ int thermalization_steps(double eta, double h) {
 }
 
 // Termalización del sistema
-void thermalization(Particle1D* part, double eta, double h, double xhist, double phist) {
+void thermalization(Particle1D* part, double eta, double h, double *xhist, double *phist) {
 	// Calculamos el número de pasos necesario para termalizar.
 	int N_therm = thermalization_steps(eta, h);
 
@@ -45,7 +45,7 @@ void thermalization(Particle1D* part, double eta, double h, double xhist, double
 	double T=0;
 	//Calculamos la energía cinética y potencial.
 	for(int i = 0; i < N_therm; i++){
-		Ep+=(K_SPRING*part[i].x*part[i].x)/2.0;
-		T+=(part[i].p*part[i].p)/(2.0*MASS);
+		Ep+=(K_SPRING*part->x*part->x)/2.0;
+		T+=(part->p*part->p)/(2.0*MASS);
 	};
 }

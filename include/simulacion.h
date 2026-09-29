@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -20,6 +21,6 @@ typedef struct {
 int thermalization_steps(double eta, double h);
 
 //Termalizacion
-void thermalization(Particle1D* part,double eta, double h, double xhist, double phist);
+void thermalization(Particle1D* part,double eta, double h, double *xhist, double *phist);
 
 

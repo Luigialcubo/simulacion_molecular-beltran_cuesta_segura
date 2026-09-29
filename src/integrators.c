@@ -1,6 +1,6 @@
 #include "integrators.h"
 
-void step_euler_maruyama(Particle1D *part, double eta, double h, double &xhist, double &phist) {
+void step_euler_maruyama(Particle1D *part, double eta, double h, double *xhist, double *phist) {
     //Pedimos un numero aleatorio gaussiano
     double Z = rand_gaussian();
     
@@ -19,7 +19,7 @@ void step_euler_maruyama(Particle1D *part, double eta, double h, double &xhist, 
 
 }
 
-void step_runge_kutta2(Particle1D *part, double eta, double h, double &xhist, double &phist) {
+void step_runge_kutta2(Particle1D *part, double eta, double h, double *xhist, double *phist) {
     //Pedimos un numero aleatorio gaussiano
     double Z = rand_gaussian();
 
@@ -45,7 +45,7 @@ void step_runge_kutta2(Particle1D *part, double eta, double h, double &xhist, do
 
 }
 
-void step_verlet_gjf(Particle1D *part, double eta, double h, double &xhist, double &phist) {
+void step_verlet_gjf(Particle1D *part, double eta, double h, double *xhist, double *phist) {
     // Parámetros propios del método Gronbech-Jensen:
         // a = (1 - (eta*h)/(2m)) / (1 + (eta*h)/(2m))
         // b = 1 / (1 + (eta*h)/(2m))
