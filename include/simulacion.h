@@ -20,6 +20,6 @@ typedef struct {
 int thermalization_steps(double eta, double h);
 
 //Termalizacion
-void thermalization(double eta, double h);
+void thermalization(Particle1D* part,double eta, double h);
 
 
