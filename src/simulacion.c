@@ -43,9 +43,16 @@ void thermalization(Particle1D* part, double eta, double h, double *xhist, doubl
 	}
 	double Ep=0;
 	double T=0;
+	double Ep_media;
+	double T_media;
 	//Calculamos la energía cinética y potencial.
 	for(int i = 0; i < N_therm; i++){
 		Ep+=(K_SPRING*part->x*part->x)/2.0;
 		T+=(part->p*part->p)/(2.0*MASS);
-	};
+	}
+	// Comprobamos el teorema de la equipartición de energía
+	Ep_media = Ep / N_therm;
+	T_media = T / N_therm;
+	printf("Ep_media= ", "%f\n", Ep_media);
+	printf("T_media= ", "%f\n", T_media);
 }
