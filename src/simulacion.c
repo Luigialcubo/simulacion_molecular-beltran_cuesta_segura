@@ -22,20 +22,20 @@ int thermalization_steps(double eta, double h) {
 }
 
 // Termalización del sistema
-void thermalization(Particle1D* part, double eta, double h) {
+void thermalization(Particle1D* part, double eta, double h, double xhist, double phist) {
 	// Calculamos el número de pasos necesario para termalizar.
 	int N_therm = thermalization_steps(eta, h);
 
 	// Bucle de termalización.
 	switch (FLAG) {
 	case 0:
-		for (int i = 0; i < N_therm; i++) step_euler_maruyama(part, eta, h);
+		for (int i = 0; i < N_therm; i++) step_euler_maruyama(part, eta, h, xhist, phist);
 		break;
 	case 1:
-		for (int i = 0; i < N_therm; i++) step_runge_kutta2(part, eta, h);
+		for (int i = 0; i < N_therm; i++) step_runge_kutta2(part, eta, h, xhist, phist);
 		break;
 	case 2:
-		for (int i = 0; i < N_therm; i++) step_verlet_gjf(part, eta, h);
+		for (int i = 0; i < N_therm; i++) step_verlet_gjf(part, eta, h, xhist, phist);
 		break;
 	default:
 		//Si fallamos al poner 0,1,2.
@@ -44,8 +44,8 @@ void thermalization(Particle1D* part, double eta, double h) {
 	double Ep=0;
 	double T=0;
 	//Calculamos la energía cinética y potencial.
-	for(int i = 0; i > N_therm; i++){
-		Ep=Ep+(K_SPRING*part[i].x*part[i].x)/2;
-		T=T+(part[i].p*part[i].p)/(2*MASS);
+	for(int i = 0; i < N_therm; i++){
+		Ep+=(K_SPRING*part[i].x*part[i].x)/2.0;
+		T+=(part[i].p*part[i].p)/(2.0*MASS);
 	};
 }
