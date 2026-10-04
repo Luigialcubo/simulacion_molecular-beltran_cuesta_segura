@@ -61,7 +61,7 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 		printf("Error al abrir el archivo\n");
 		return;
 	}
-	// Simulamos pasos, y vamos guardando el promedio de la energía potencial y cinética.
+	// Simulamos pasos, y vamos guardando el promedio de la energía potencial y cinética, asi como posicion y momento de la particula.
 	while (t < t_final) {
 		n_pasos++;
 		Ep_inst = 0.5 * K_SPRING * part->x * part->x;
