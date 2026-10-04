@@ -77,3 +77,18 @@ set style fill solid 0.5 border lc rgb "black"
 
 plot "resultados/data_alg2_eta1.0_h0.0010.dat" u (bin($4,binwidth)):(1.0/(binwidth*N)) smooth freq w boxes lc rgb "skyblue" title "Simulación", \
      gaussiana(x) w l lw 3 lc rgb "red" title "Gaussiana Teórica N(0,1)"
+
+
+set output "plots/trayectorias_damping.png"
+set title "Efecto del coeficiente de damping en la trayectoria x(t)"
+set xlabel "Tiempo t"
+set ylabel "Posición x"
+set xrange [0:100]  # Graficamos un intervalo de 100 unidades para apreciar bien el detalle
+set yrange [-3:3]
+
+plot "resultados/data_alg2_eta0.1_h0.0010.dat" u 3:4 w l lw 1.5 lc rgb "blue" title "eta = 0.1 (Subamortiguado: Oscilatorio)", \
+     "resultados/data_alg2_eta1.0_h0.0010.dat" u 3:4 w l lw 1.5 lc rgb "green" title "eta = 1.0 (Intermedio)", \
+     "resultados/data_alg2_eta10.0_h0.0010.dat" u 3:4 w l lw 1.5 lc rgb "red" title "eta = 10.0 (Sobreamortiguado: Difusivo)"
+
+unset xrange
+unset yrange
