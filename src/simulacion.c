@@ -45,7 +45,7 @@ void thermalization(Particle1D* part, double eta, double h, double *xhist, doubl
 }
 
 //Teorema de la equipartición
-void equipartition( Particle1D *part, double t_final, double h, double eta, const char* file_ep, const char* file_T ) {
+void equipartition( Particle1D *part, double t_final, double h, double eta, const char* file) {
 	//Inicializamos las variables
 	double t = 0;
 	double sum_T = 0;
@@ -56,13 +56,8 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 	double Ep_prom;
 	double T_prom;
 	//Abrimos archivos para guardar las energías
-	FILE* Ep = fopen(file_ep, "w");
-	if (!Ep) {
-		printf("Error al abrir el archivo\n");
-		return;
-	}
-	FILE* T = fopen(file_T, "w");
-	if (!T) {
+	FILE* g = fopen(file, "w");
+	if (!g) {
 		printf("Error al abrir el archivo\n");
 		return;
 	}
@@ -70,23 +65,22 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 	while (t < t_final) {
 		n_pasos++;
 		Ep_inst = 0.5 * K_SPRING * part->x * part->x;
-		T_inst = (part->p* part->p)/(2.0*MASS);
+		T_inst = (part->p * part->p) / (2.0 * MASS);
 		sum_Ep += Ep_inst;
 		sum_T += T_inst;
 		Ep_prom = sum_Ep / n_pasos;  //Promedio de la energía potencial.
 		T_prom = sum_T / n_pasos; //Promedio de la energía cinética.
-		fprintf(Ep, "%f\n", Ep_prom);
-		fprintf(T, "%f\n", T_prom);
+		fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
 		//Paso de simulación
 		switch (FLAG) {
 		case 0:
-			step_euler_maruyama(part, eta, h, xhist, phist);
+			step_euler_maruyama(part, eta, h);
 			break;
 		case 1:
-			step_runge_kutta2(part, eta, h, xhist, phist);
+			step_runge_kutta2(part, eta, h);
 			break;
 		case 2:
-			step_verlet_gjf(part, eta, h, xhist, phist);
+			step_verlet_gjf(part, eta, h);
 			break;
 		default:
 			//Si fallamos al poner 0,1,2.
@@ -94,7 +88,6 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 		}
 		t += h;
 	}
-	fclose(Ep);
-	fclose(T);
+	fclose(g);
 
 	}
