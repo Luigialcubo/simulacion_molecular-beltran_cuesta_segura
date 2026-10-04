@@ -23,20 +23,20 @@ int thermalization_steps(double eta, double h) {
 }
 
 // Termalización del sistema
-void thermalization(Particle1D* part, double eta, double h, double *xhist, double *phist) {
+void thermalization(Particle1D* part, double eta, double h) {
 	// Calculamos el número de pasos necesario para termalizar.
 	int N_therm = thermalization_steps(eta, h);
 
 	// Bucle de termalización.
 	switch (FLAG) {
 	case 0:
-		for (int i = 0; i < N_therm; i++) step_euler_maruyama(part, eta, h, xhist, phist);
+		for (int i = 0; i < N_therm; i++) step_euler_maruyama(part, eta, h);
 		break;
 	case 1:
-		for (int i = 0; i < N_therm; i++) step_runge_kutta2(part, eta, h, xhist, phist);
+		for (int i = 0; i < N_therm; i++) step_runge_kutta2(part, eta, h);
 		break;
 	case 2:
-		for (int i = 0; i < N_therm; i++) step_verlet_gjf(part, eta, h, xhist, phist);
+		for (int i = 0; i < N_therm; i++) step_verlet_gjf(part, eta, h);
 		break;
 	default:
 		//Si fallamos al poner 0,1,2.
@@ -55,6 +55,7 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 	double T_inst;
 	double Ep_prom;
 	double T_prom;
+	int contador = 0;
 	//Abrimos archivos para guardar las energías
 	FILE* g = fopen(file, "w");
 	if (!g) {
@@ -63,6 +64,7 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 	}
 	// Simulamos pasos, y vamos guardando el promedio de la energía potencial y cinética, asi como posicion y momento de la particula.
 	while (t < t_final) {
+		
 		n_pasos++;
 		Ep_inst = 0.5 * K_SPRING * part->x * part->x;
 		T_inst = (part->p * part->p) / (2.0 * MASS);
@@ -70,7 +72,16 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 		sum_T += T_inst;
 		Ep_prom = sum_Ep / n_pasos;  //Promedio de la energía potencial.
 		T_prom = sum_T / n_pasos; //Promedio de la energía cinética.
-		fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
+		
+		if(h == 1e-4){
+			if(contador == 9){
+				fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
+				contador = 0;
+			}
+		} else {
+			fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
+		}
+		
 		//Paso de simulación
 		switch (FLAG) {
 		case 0:
@@ -87,6 +98,7 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 			break;
 		}
 		t += h;
+		if(contador < 9 && h == 1e-4) contador++;
 	}
 	fclose(g);
 

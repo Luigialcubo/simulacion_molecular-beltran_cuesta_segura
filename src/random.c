@@ -17,7 +17,7 @@ double rand_gaussian(){
     double x2 = rand_uniform();
 
     double salida1 = sqrt(-2.0 * log(x1)) * (-1.0) * cos(2.0 * PI * x2);
-    double salida2 = sqrt(-2.0 * log(x1)) * (-1.0) * sin(2.0 * PI * x2);
+    //double salida2 = sqrt(-2.0 * log(x1)) * (-1.0) * sin(2.0 * PI * x2);
 
     //Sacamos uno de los dos por dar un resultado, pero podriamos usar los dos (si en un futuro queremos solo uno, borramos el otro para que no haga tdo el rato el calculo)
     return salida1;
