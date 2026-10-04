@@ -1,5 +1,6 @@
 #include "simulacion.h"
 #include "integrators.h"
+#include "stdio.h"
 
 
 // Obtiene los pasos de termalización.
@@ -41,18 +42,59 @@ void thermalization(Particle1D* part, double eta, double h, double *xhist, doubl
 		//Si fallamos al poner 0,1,2.
 		break;
 	}
-	double Ep=0;
-	double T=0;
-	double Ep_media;
-	double T_media;
-	//Calculamos la energía cinética y potencial.
-	for(int i = 0; i < N_therm; i++){
-		Ep+=(K_SPRING*part->x*part->x)/2.0;
-		T+=(part->p*part->p)/(2.0*MASS);
-	}
-	// Comprobamos el teorema de la equipartición de energía
-	Ep_media = Ep / N_therm;
-	T_media = T / N_therm;
-	printf("Ep_media= ", "%f\n", Ep_media);
-	printf("T_media= ", "%f\n", T_media);
 }
+
+//Teorema de la equipartición
+void equipartition( Particle1D *part, double t_final, double h, double eta, const char* file_ep, const char* file_T ) {
+	//Inicializamos las variables
+	double t = 0;
+	double sum_T = 0;
+	double sum_Ep = 0;
+	double n_pasos = 0;
+	double Ep_inst;
+	double T_inst;
+	double Ep_prom;
+	double T_prom;
+	//Abrimos archivos para guardar las energías
+	FILE* Ep = fopen(file_ep, "w");
+	if (!Ep) {
+		printf("Error al abrir el archivo\n");
+		return;
+	}
+	FILE* T = fopen(file_T, "w");
+	if (!T) {
+		printf("Error al abrir el archivo\n");
+		return;
+	}
+	// Simulamos pasos, y vamos guardando el promedio de la energía potencial y cinética.
+	while (t < t_final) {
+		n_pasos++;
+		Ep_inst = 0.5 * K_SPRING * part->x * part->x;
+		T_inst = (part->p* part->p)/(2.0*MASS);
+		sum_Ep += Ep_inst;
+		sum_T += T_inst;
+		Ep_prom = sum_Ep / n_pasos;  //Promedio de la energía potencial.
+		T_prom = sum_T / n_pasos; //Promedio de la energía cinética.
+		fprintf(Ep, "%f\n", Ep_prom);
+		fprintf(T, "%f\n", T_prom);
+		//Paso de simulación
+		switch (FLAG) {
+		case 0:
+			step_euler_maruyama(part, eta, h, xhist, phist);
+			break;
+		case 1:
+			step_runge_kutta2(part, eta, h, xhist, phist);
+			break;
+		case 2:
+			step_verlet_gjf(part, eta, h, xhist, phist);
+			break;
+		default:
+			//Si fallamos al poner 0,1,2.
+			break;
+		}
+		t += h;
+	}
+	fclose(Ep);
+	fclose(T);
+
+	}

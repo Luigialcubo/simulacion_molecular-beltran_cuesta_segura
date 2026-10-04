@@ -23,4 +23,8 @@ int thermalization_steps(double eta, double h);
 //Termalizacion
 void thermalization(Particle1D* part,double eta, double h, double *xhist, double *phist);
 
+//Teorema de la equipartición
+void equipartition(Particle1D* part, double t_final, double h);
+
+
 
