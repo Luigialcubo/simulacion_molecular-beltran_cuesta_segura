@@ -22,7 +22,7 @@ typedef struct {
 int thermalization_steps(double eta, double h);
 
 //Termalizacion
-void thermalization(Particle1D* part,double eta, double h);
+void thermalization(Particle1D* part,double eta, double h, int flag);
 
 //Teorema de la equipartición
 void equipartition( Particle1D *part, double t_final, double h, double eta, const char* file);

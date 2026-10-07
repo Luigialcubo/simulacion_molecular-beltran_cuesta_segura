@@ -27,8 +27,8 @@ int main(void) {
 				part.p = 0.0;
 
 				//Termalizamos (descartamos)
-				thermalization(&part, eta, h);
-
+				thermalization(&part, eta, h, FLAG);
+				printf("Estado tras termalizar: x = %e, p = %e\n", part.x, part.p);
 				//Nombre archivo unico simulacion
 				sprintf(filename, "resultados/data_alg%d_eta%.1f_h%.4f.dat", FLAG, eta, h);
 

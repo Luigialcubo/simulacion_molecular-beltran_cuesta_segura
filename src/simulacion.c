@@ -19,16 +19,16 @@ int thermalization_steps(double eta, double h) {
 		tau_max *= 5.0;
 
 	// Calculamos los pasos necesarios:
-		return (int)(tau_max / h);
+		return (long long)(tau_max / h);
 }
 
 // Termalización del sistema
-void thermalization(Particle1D* part, double eta, double h) {
+void thermalization(Particle1D* part, double eta, double h, int flag) {
 	// Calculamos el número de pasos necesario para termalizar.
-	int N_therm = thermalization_steps(eta, h);
+	long long N_therm = thermalization_steps(eta, h);
 
 	// Bucle de termalización.
-	switch (FLAG) {
+	switch (flag) {
 	case 0:
 		for (int i = 0; i < N_therm; i++) step_euler_maruyama(part, eta, h);
 		break;
