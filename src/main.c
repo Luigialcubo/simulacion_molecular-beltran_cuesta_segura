@@ -1,6 +1,6 @@
-#include "integrators.h"
-#include "random.h"
-#include "simulacion.h"
+#include "../include/integrators.h"
+#include "../include/random.h"
+#include "../include/simulacion.h"
 
 int FLAG = 0;
 
