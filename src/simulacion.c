@@ -44,6 +44,14 @@ void thermalization(Particle1D* part, double eta, double h, int flag) {
 	}
 }
 
+// Termalización del sistema usando verlet para el segundo sistema
+void thermalization2(Particle1D* part, double eta, double h, double A) {
+	// Calculamos el número de pasos necesario para termalizar.
+	long long N_therm = thermalization_steps(eta, h);
+	// Bucle de termalización.
+	for (int i = 0; i < N_therm; i++) step_verlet_gjf2(part, eta, h, A);
+}
+
 //Teorema de la equipartición
 void equipartition( Particle1D *part, double t_final, double h, double eta, const char* file) {
 	//Inicializamos las variables
@@ -103,3 +111,38 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 	fclose(g);
 
 	}
+
+void equipartition2( Particle1D *part, double t_final, double h, double eta, double A, const char* file) {
+	//Inicializamos las variables
+	double t = 0;
+	double sum_T = 0;
+	double sum_Ep = 0;
+	double n_pasos = 0;
+	double Ep_inst;
+	double T_inst;
+	double Ep_prom;
+	double T_prom;
+	int contador = 0;
+	//Abrimos archivos para guardar las energías
+	FILE* g = fopen(file, "w");
+	if (!g) {
+		printf("Error al abrir el archivo\n");
+		return;
+	}
+	// Simulamos pasos, y vamos guardando el promedio de la energía potencial y cinética, asi como posicion y momento de la particula.
+	while (t < t_final) {
+		
+		n_pasos++;
+		Ep_inst = A * (part->x * part->x - 1)*(part->x * part->x - 1);
+		T_inst = (part->p * part->p) / (2.0 * MASS);
+		sum_Ep += Ep_inst;
+		sum_T += T_inst;
+		Ep_prom = sum_Ep / n_pasos;  //Promedio de la energía potencial.
+		T_prom = sum_T / n_pasos; //Promedio de la energía cinética.
+
+		fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
+		step_verlet_gjf(part, eta, h);
+		t += h;
+	}
+	fclose(g);
+}

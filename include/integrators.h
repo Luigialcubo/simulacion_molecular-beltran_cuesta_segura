@@ -10,5 +10,8 @@ void step_euler_maruyama(Particle1D *part, double eta, double h);
 //Runge-Kutta de 2º Orden Estocástico
 void step_runge_kutta2(Particle1D *part, double eta, double h);
 
-//Verlet Explícito Estocástico (Algoritmo Gronbech-Jensen)
+//Verlet Explícito Estocástico para un oscilador armónico (Algoritmo Gronbech-Jensen)
 void step_verlet_gjf(Particle1D *part, double eta, double h);
+
+//Verlet Explícito Estocástico para el segundo objetivo (Algoritmo Gronbech-Jensen)
+void step_verlet_gjf2(Particle1D *part, double eta, double h, double A);
