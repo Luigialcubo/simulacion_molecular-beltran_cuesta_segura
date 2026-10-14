@@ -98,10 +98,11 @@ void step_verlet_gjf2(Particle1D *part, double eta, double h, double A) {
     double x_next = part->x + b * h * part->p + (b * h * h / (2.0 * MASS)) * f_x + (b * h / (2.0 * MASS)) * beta_stoch;
     
     // Fuerza evaluada en la nueva posición f_{n+1} = -k * x_{n+1}
-    double f_next = -A * 4 * x_next * (x_next * x_next - 1);
+    double f_next = -A * 4.0 * x_next * (x_next * x_next - 1);
     
     // 2. Actualizar el momento p^{n+1}
-    double p_next = a * part->p + (h / (2.0 * MASS)) * (a * f_x + f_next) + (b / MASS) * beta_stoch;
+ // 2. Actualizar el momento p^{n+1}
+    double p_next = a * part->p + (h / 2.0) * (a * f_x + f_next) + b * beta_stoch;
     
     part->x = x_next;
     part->p = p_next;

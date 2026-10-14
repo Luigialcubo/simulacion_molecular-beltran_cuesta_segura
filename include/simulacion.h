@@ -7,7 +7,7 @@
 //Parametros fijos
 #define MASS 1.0
 #define K_SPRING 1.0
-#define KB_T 1.0
+#define KB_T 0.2
 #define PI 3.141592653589793238
 
 extern int FLAG; //Método empleado (Euler-Maruyama (flag=0), Runge-Kutta (flag=1), Verlet explicito(flag=2)).

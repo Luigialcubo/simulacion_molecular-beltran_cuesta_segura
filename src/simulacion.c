@@ -127,36 +127,109 @@ void equipartition(Particle1D* part, double t_final, double h, double eta, const
 }
 
 void equipartition2(Particle1D* part, double t_final, double h, double eta, double A, const char* file) {
-	//Inicializamos las variables
-	double t = 0;
-	double sum_T = 0;
-	double sum_Ep = 0;
-	double n_pasos = 0;
-	double Ep_inst;
-	double T_inst;
-	double Ep_prom;
-	double T_prom;
-	int contador = 0;
-	//Abrimos archivos para guardar las energías
+	// 1. Inicialización de variables
+	double t = 0.0;
+	double sum_T = 0.0;
+	double sum_Ep = 0.0;
+	long long n_pasos = 0;
+
+	double Ep_inst, T_inst;
+	double Ep_prom, T_prom;
+
+	// 2. Contadores de ocupación y control de pozos
+	long long count_pos = 0;
+	long long count_neg = 0;
+
+	int estado_actual;
+	if (part->x >= 0.0) {
+		estado_actual = 1;   // Pozo derecho (x >= 0)
+	}
+	else {
+		estado_actual = -1;  // Pozo izquierdo (x < 0)
+	}
+
+	double t_estancia = 0.0;
+
+	// Algoritmo para guardar pasos (igual que en equipartition)
+	long long pasos_entre_guardados = (long long)(0.5 / h);
+	if (pasos_entre_guardados < 1) {
+		pasos_entre_guardados = 1;
+	}
+
+	// Apertura del archivo de resultados
 	FILE* g = fopen(file, "w");
 	if (!g) {
-		printf("Error al abrir el archivo\n");
+		printf("Error al abrir el archivo: %s\n", file);
 		return;
 	}
-	// Simulamos pasos, y vamos guardando el promedio de la energía potencial y cinética, asi como posicion y momento de la particula.
+
+	// Archivo auxiliar para registrar los tiempos de salto entre pozos
+	char file_tiempos[256];
+	sprintf(file_tiempos, "%s_tiempos.dat", file);
+	FILE* f_t = fopen(file_tiempos, "w");
+
+	// 3. Bucle de evolución temporal
 	while (t < t_final) {
-		
 		n_pasos++;
-		Ep_inst = A * (part->x * part->x - 1)*(part->x * part->x - 1);
+
+		// Energía potencial del doble pozo: V(x) = A * (x^2 - 1)^2
+		double x2_menos1 = (part->x * part->x) - 1.0;
+		Ep_inst = A * x2_menos1 * x2_menos1;
+
+		// Energía cinética: T = p^2 / (2m)
 		T_inst = (part->p * part->p) / (2.0 * MASS);
+
 		sum_Ep += Ep_inst;
 		sum_T += T_inst;
-		Ep_prom = sum_Ep / n_pasos;  //Promedio de la energía potencial.
-		T_prom = sum_T / n_pasos; //Promedio de la energía cinética.
 
-		fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
-		step_verlet_gjf(part, eta, h);
+		Ep_prom = sum_Ep / (double)n_pasos;
+		T_prom = sum_T / (double)n_pasos;
+
+		// Conteo de ocupación de estados
+		if (part->x >= 0.0) {
+			count_pos++;
+		}
+		else {
+			count_neg++;
+		}
+
+		// Detección de saltos entre pozos
+		int estado_nuevo;
+		if (part->x >= 0.0) {
+			estado_nuevo = 1;
+		}
+		else {
+			estado_nuevo = -1;
+		}
+
+		if (estado_nuevo != estado_actual) {
+			// Si
+			if (t_estancia > 0.0) {
+				fprintf(f_t, "%f %d\n", t_estancia, estado_actual);
+			}
+			estado_actual = estado_nuevo;
+			t_estancia = 0.0;
+		}
+		else {
+			t_estancia += h;
+		}
+
+		// Guardar solo cuando toque
+		if (n_pasos % pasos_entre_guardados == 0) {
+			fprintf(g, "%f %f %f %f %f\n", Ep_prom, T_prom, t, part->x, part->p);
+		}
+
+		// Paso de simulación
+		step_verlet_gjf2(part, eta, h, A);
 		t += h;
 	}
+
 	fclose(g);
+	fclose(f_t);
+
+	// Muestra por consola las fracciones de ocupación calculadas
+	double frac_pos = (double)count_pos / (double)n_pasos;
+	double frac_neg = (double)count_neg / (double)n_pasos;
+	printf("   [eta=%.2f, A=%.1f] Ocupacion: P(x>0) = %.3f | P(x<0) = %.3f\n",
+		eta, A, frac_pos, frac_neg);
 }
