@@ -56,6 +56,7 @@ double thermalization(Particle1D* part, double eta, double h, int flag) {
 		//Si fallamos al poner 0,1,2.
 		break;
 	}
+	// Devolvemos el tiempo de termalización para que no se ejecuten esas medidas
 	return t_term;
 }
 // Termalización del sistema usando verlet para el segundo sistema
@@ -136,7 +137,7 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 	double Ep_inst, T_inst;
 	double Ep_prom, T_prom;
 
-	// 2. Contadores de ocupación y control de pozos
+	// 2. Control de dónde esta la particula.
 	long long count_pos = 0;
 	long long count_neg = 0;
 
@@ -203,7 +204,7 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 		}
 
 		if (estado_nuevo != estado_actual) {
-			// Si
+			// Si cambia de estado, anotamos donde ha saltado, y el tiempo que ha tardado en saltar.
 			if (t_estancia > 0.0) {
 				fprintf(f_t, "%f %d\n", t_estancia, estado_actual);
 			}
@@ -227,7 +228,7 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 	fclose(g);
 	fclose(f_t);
 
-	// Muestra por consola las fracciones de ocupación calculadas
+	// Muestra por consola las fracciones de ocupación calculadas (P(x>0) y P(x<0))
 	double frac_pos = (double)count_pos / (double)n_pasos;
 	double frac_neg = (double)count_neg / (double)n_pasos;
 	printf("   [eta=%.2f, A=%.1f] Ocupacion: P(x>0) = %.3f | P(x<0) = %.3f\n",

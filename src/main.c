@@ -9,7 +9,7 @@ int main(void) {
 	init_random();
 	char filename[100];
 	Particle1D part;
-	/*int i, j;
+	int i, j;
 
 	double etas[] = { 0.1, 1.0, 10.0 };
 	double hs[] = { 1e-4, 1e-3, 1e-2, 1e-1 };
@@ -39,7 +39,7 @@ int main(void) {
 				printf("Simulacion completada con algortmo %d eta=%.1f h=%.4f\n", FLAG, eta, h);
 			}
 		}
-	}*/
+	}
 
 
 
@@ -69,10 +69,10 @@ int main(void) {
 
 			// Medida y simulación
 			if (A2 >= 2.0) {
-				t_final = 1000000.0;  // Factor 10 más para que cruce la barrera varias veces
+				t_final = 1000000.0;  // Grande para que atraviese más la barrera
 			}
 			else {
-				t_final = 50000.0;   // Suficiente para A=0.5 y A=1.0
+				t_final = 50000.0;  
 			}
 			equipartition2(&part, t_final, h, eta, A2, filename);
 
