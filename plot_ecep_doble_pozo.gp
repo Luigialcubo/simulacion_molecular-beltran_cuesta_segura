@@ -10,7 +10,7 @@ set yrange [0:0.2]
 
 # Eje X: ventana representativa para ver la dinámica sin que se sature
 # (puedes ajustar el intervalo, por ejemplo [0:2000] o [1000:3000])
-set xrange [0:5000]
+set xrange [0:50000]
 
 
 
