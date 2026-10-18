@@ -19,7 +19,7 @@ do for [eta_val in etas] {
     do for [A_str in alturas_A] {
         A_val = A_str + 0.0
 
-        set output sprintf("histograma_posicion_eta%s_A%s.png", eta_val, A_str)
+        set output sprintf("plots objetivo 2/histogramas/histograma_posicion_eta%s_A%s.png", eta_val, A_str)
         set title sprintf("Distribución P(x) ({/Symbol h} = %s, A = %s, k_B T = 0.2)", eta_val, A_str) font "sans-bold,12"
 
         fichero = sprintf("resultados/doblepozo_eta%s_A%s.dat", eta_val, A_str)

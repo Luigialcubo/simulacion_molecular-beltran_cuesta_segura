@@ -9,14 +9,14 @@ int main(void) {
 	init_random();
 	char filename[100];
 	Particle1D part;
-	int i, j;
+	//int i, j;
 
-	double etas[] = { 0.1, 1.0, 10.0 };
-	double hs[] = { 1e-4, 1e-3, 1e-2, 1e-1 };
-	double t_final = 15000.0;
-	double t_term = 0;
+	//double etas[] = { 0.1, 1.0, 10.0 };
+	//double hs[] = { 1e-4, 1e-3, 1e-2, 1e-1 };
+	//double t_final = 15000.0;
+	//double t_term = 0;
 
-
+	/*
 
 	for (FLAG = 0; FLAG < 3; FLAG++) { //Recorro las flags
 		for (i = 0; i < 3; i++) { //Recorro las etas
@@ -41,7 +41,7 @@ int main(void) {
 		}
 	}
 
-
+	*/
 
 	// Segundo objetivo
 	FLAG = 2; // Verlet
@@ -72,7 +72,7 @@ int main(void) {
 				t_final = 1000000.0;  // Grande para que atraviese más la barrera
 			}
 			else {
-				t_final = 50000.0;  
+				t_final = 100000.0;  
 			}
 			equipartition2(&part, t_final, h, eta, A2, filename);
 
