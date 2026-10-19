@@ -169,6 +169,11 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 	sprintf(file_tiempos, "%s_tiempos.dat", file);
 	FILE* f_t = fopen(file_tiempos, "w");
 
+	// Archivo auxiliar para registrar las probabilidades de ocupación
+	char file_ocupacion[256];
+	sprintf(file_ocupacion, "%s_ocupacion.dat", file);
+	FILE* f_o = fopen(file_ocupacion, "w");
+
 	// 3. Bucle de evolución temporal
 	while (t < t_final) {
 		n_pasos++;
@@ -225,12 +230,13 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 		t += h;
 	}
 
+
 	fclose(g);
 	fclose(f_t);
 
-	// Muestra por consola las fracciones de ocupación calculadas (P(x>0) y P(x<0))
+	// Guarda en el fichero las fracciones de ocupación calculadas (P(x>0) y P(x<0))
 	double frac_pos = (double)count_pos / (double)n_pasos;
 	double frac_neg = (double)count_neg / (double)n_pasos;
-	printf("   [eta=%.2f, A=%.1f] Ocupacion: P(x>0) = %.3f | P(x<0) = %.3f\n",
-		eta, A, frac_pos, frac_neg);
+	fprintf(f_o, "%f %f", frac_pos, frac_neg); 	
+	fclose(f_o);
 }

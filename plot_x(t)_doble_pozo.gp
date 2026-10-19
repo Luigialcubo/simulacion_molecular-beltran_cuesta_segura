@@ -23,7 +23,7 @@ alturas_A = "0.5 1.0 2.0"
 
 do for [eta in etas] {
     do for [A_val in alturas_A] {
-        set output sprintf("trayectoria_x_eta%s_A%s.png", eta, A_val)
+        set output sprintf("plots objetivo 2/trayectorias/trayectoria_x_eta%s_A%s.png", eta, A_val)
         set title sprintf("Trayectoria x(t) en doble pozo ({/Symbol h} = %s, A = %s, k_B T = 0.2)", eta, A_val) font "sans-bold,11"
 
         fichero = sprintf("resultados/doblepozo_eta%s_A%s.dat", eta, A_val)
