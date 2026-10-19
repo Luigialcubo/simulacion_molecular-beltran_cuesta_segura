@@ -9,7 +9,7 @@ int main(void) {
 	init_random();
 	char filename[100];
 	Particle1D part;
-	int i, j;
+	/*int i, j;
 
 	double etas[] = { 0.1, 1.0, 10.0 };
 	double hs[] = { 1e-4, 1e-3, 1e-2, 1e-1 };
@@ -40,7 +40,7 @@ int main(void) {
 			}
 		}
 	}
-
+	*/
 
 
 	// Segundo objetivo
@@ -61,18 +61,21 @@ int main(void) {
 			part.p = 0.0;
 
 			// Termalización
-			//thermalization2(&part, eta, h, A2);
-			//printf("Estado tras termalizar: x = %e, p = %e\n", part.x, part.p);
+			long long pasos_termalizacion = 200000; // Pasos previos sin fprintf
+			for (long long step = 0; step < pasos_termalizacion; step++) {
+				// Llamas al paso de integración del doble pozo
+				step_verlet_gjf2(&part, eta, A2, h);
+			}
 
 			// Nombre de archivo único que incluye eta y A
 			sprintf(filename, "resultados/doblepozo_eta%.2f_A%.1f.dat", eta, A2);
 
 			// Medida y simulación
 			if (A2 >= 2.0) {
-				t_final = 1000000.0;  // Grande para que atraviese más la barrera
+				t_final = 10000000.0;  // Grande para que atraviese más la barrera
 			}
 			else {
-				t_final = 50000.0;  
+				t_final = 1000000.0;  
 			}
 			equipartition2(&part, t_final, h, eta, A2, filename);
 

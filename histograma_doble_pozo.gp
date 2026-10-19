@@ -1,43 +1,70 @@
+# Configuración general
 set terminal pngcairo enhanced font "sans,11" size 900, 500
-set grid back lc rgb "#e8e8e8" lt 1 lw 1
-set border 31 lc rgb "#333333" lw 1
+set xlabel "Posición x"
+set ylabel "Densidad de Probabilidad P(x)"
 
-set xlabel "Posición x" font "sans-bold,11"
-set ylabel "Densidad de Probabilidad P(x)" font "sans-bold,11"
+# Rango y ancho de caja
 set xrange [-1.8:1.8]
-
 binwidth = 0.04
-bin(x, width) = width * (floor(x / width) + 0.5)
 
+# Función que asigna valor x al centro de la caja
+bin(x, w) = w * (floor(x / w) + 0.5)
+
+# Parámetros de simulación
 kbT = 0.2
-etas = "0.01 0.10 1.00 5.00"
 alturas_A = "0.5 1.0 2.0"
-
-set style fill solid 0.45 border lc rgb "#333333"
+etas = "0.01 0.10 1.00 5.00"
 
 do for [eta_val in etas] {
-    do for [A_str in alturas_A] {
-        A_val = A_str + 0.0
+    do for [A_txt in alturas_A] {
+        
+        # Convertimos la cadena de texto de A en número para operar
+        A_val = A_txt + 0.0
 
-        set output sprintf("histograma_posicion_eta%s_A%s.png", eta_val, A_str)
-        set title sprintf("Distribución P(x) ({/Symbol h} = %s, A = %s, k_B T = 0.2)", eta_val, A_str) font "sans-bold,12"
+        # Construcción del nombre del archivo
+        fichero_datos = sprintf("resultados/doblepozo_eta%s_A%s.dat", eta_val, A_txt)
+        set output sprintf("histograma_eta%s_A%s.png", eta_val, A_txt)
 
-        fichero = sprintf("resultados/doblepozo_eta%s_A%s.dat", eta_val, A_str)
+        # Número total de datos N (columna 4: posición x)
+        stats fichero_datos using 4 nooutput
+        N = STATS_records
 
-        # Normalización a partir de los registros del archivo
-        stats fichero using 4 nooutput
-        N_puntos = STATS_records
+        # Cálculo de la función de partición Z
+        dx_int = 0.0005
+        Z_val = 0.0
+        x_eval = -3.0
+        while (x_eval <= 3.0) {
+            Z_val = Z_val + exp(-A_val * (x_eval**2 - 1.0)**2 / kbT) * dx_int
+            x_eval = x_eval + dx_int
+        }
 
-        V(x) = A_val * (x**2 - 1.0)**2
-        P_sin_norm(x) = exp(-V(x) / kbT)
+        # Densidad teórica normalizada
+        P_teor(x) = exp(-A_val * (x**2 - 1.0)**2 / kbT) / Z_val
 
-        norm_factor = (A_val == 0.5) ? 0.72 : (A_val == 1.0 ? 0.98 : 1.35)
-        color_hist = (A_str eq "0.5") ? "#1b9e77" : (A_str eq "1.0" ? "#d95f02" : "#7570b3")
+        # Gráfica del histograma y la curva analítica
+        plot fichero_datos using (bin($4, binwidth)):(1.0 / (N * binwidth)) \
+             smooth frequency with boxes title "Simulacion", \
+             P_teor(x) with lines lw 2 title "Teoria Boltzmann"
 
-        plot fichero using (bin($4, binwidth)):(1.0 / (N_puntos * binwidth)) \
-             smooth frequency with boxes lc rgb color_hist title "Histograma Simulación", \
-             P_sin_norm(x) * norm_factor with lines lc rgb "#111111" lw 2 dt 1 title "Teoría Boltzmann"
+        # Cierre del archivo
+        set output
+
+        # Área teórica integrada
+        area_teor = 0.0
+        x_eval = -3.0
+        while (x_eval <= 3.0) {
+            area_teor = area_teor + P_teor(x_eval) * dx_int
+            x_eval = x_eval + dx_int
+        }
+
+        # Área del histograma experimental:
+        #Peso suma
+        stats fichero_datos using ( (1.0 / (N * binwidth)) * binwidth ) nooutput
+        #Suma
+        area_exp = STATS_sum
+
+        print sprintf("[eta = %4s | A = %3s] -> Area Exp = %.6f | Area Teor = %.6f", \
+                      eta_val, A_txt, area_exp, area_teor)
     }
 }
 
-set output
