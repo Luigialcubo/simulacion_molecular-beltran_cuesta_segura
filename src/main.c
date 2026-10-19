@@ -17,7 +17,7 @@ int main(void) {
 	//double t_term = 0;
 
 	/*
-
+	// Primer objetivo	
 	for (FLAG = 0; FLAG < 3; FLAG++) { //Recorro las flags
 		for (i = 0; i < 3; i++) { //Recorro las etas
 			for (j = 0; j < 4; j++) { //Recorro las hs
@@ -68,11 +68,16 @@ int main(void) {
 			sprintf(filename, "resultados/doblepozo_eta%.2f_A%.1f.dat", eta, A2);
 
 			// Medida y simulación
-			if (A2 >= 2.0) {
-				t_final = 1000000.0;  // Grande para que atraviese más la barrera
+			if(eta >= 0.1){
+				if (A2 >= 2.0) {
+					t_final = 1000000.0;  // Grande para que atraviese más la barrera
+				}
+				else {
+					t_final = 100000.0;  
+				}
 			}
-			else {
-				t_final = 100000.0;  
+			else{
+				t_final = 1000000.0; // Necesitamos más tiempo para las etas pequeñas para que podamos asegurar que el sistema ha termalizado.
 			}
 			equipartition2(&part, t_final, h, eta, A2, filename);
 

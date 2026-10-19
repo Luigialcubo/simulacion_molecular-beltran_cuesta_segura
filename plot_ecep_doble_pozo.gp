@@ -26,13 +26,15 @@ do for [eta in etas] {
 
         fichero = sprintf("resultados/doblepozo_eta%s_A%s.dat", eta, A_val)
 
-    
-        if(A_val == 2.0){
+        if(eta >= 0.1){
+            if(A_val == 2.0){
+                set xrange [0:1000000]
+            } else {
+                set xrange [0:100000]
+            }
+        } else{
             set xrange [0:1000000]
-        } else {
-            set xrange [0:100000]
         }
-
         plot 0.1 dt 2 lc rgb "black", \
             fichero u 3:2 w l lw 2 lc rgb "red" title "<Ec> Cinética (Cumple Equipartición)", \
             fichero u 3:1 w l lw 2 lc rgb "blue" title "<Ep> Potencial (No es 1/2 kBT)"
