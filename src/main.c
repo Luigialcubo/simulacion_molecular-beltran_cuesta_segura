@@ -42,7 +42,6 @@ int main(void) {
 	}
 	*/
 
-	*/
 
 	// Segundo objetivo
 	FLAG = 2; // Verlet
@@ -77,7 +76,7 @@ int main(void) {
 					t_final = 1000000.0;  // Grande para que atraviese más la barrera
 				}
 				else {
-					t_final = 100000.0;  
+					t_final = 300000.0;  
 				}
 			}
 			else{
