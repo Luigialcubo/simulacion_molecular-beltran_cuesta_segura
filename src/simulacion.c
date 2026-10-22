@@ -200,11 +200,12 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 		}
 
 		// Detección de saltos entre pozos
-		int estado_nuevo;
-		if (part->x >= 0.0) {
+		int estado_nuevo=estado_actual;
+		if (part->x >= 0.5) {
 			estado_nuevo = 1;
 		}
 		else {
+			if (part->x <= -0.5)
 			estado_nuevo = -1;
 		}
 

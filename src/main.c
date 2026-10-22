@@ -45,7 +45,7 @@ int main(void) {
 
 	// Segundo objetivo
 	FLAG = 2; // Verlet
-	double h = 0.001;
+	double h = 0.01;
 	double t_final;
 
 	double etas2[] = { 0.01, 0.1, 1.0, 5.0 };
@@ -61,10 +61,10 @@ int main(void) {
 			part.p = 0.0;
 
 			// Termalización
-			long long pasos_termalizacion = 200000; // Pasos previos sin fprintf
+			long long pasos_termalizacion = 300000; // Pasos previos sin fprintf
 			for (long long step = 0; step < pasos_termalizacion; step++) {
 				// Llamas al paso de integración del doble pozo
-				step_verlet_gjf2(&part, eta, A2, h);
+				step_verlet_gjf2(&part, eta, h, A2);
 			}
 
 			// Nombre de archivo único que incluye eta y A
@@ -76,11 +76,11 @@ int main(void) {
 					t_final = 1000000.0;  // Grande para que atraviese más la barrera
 				}
 				else {
-					t_final = 300000.0;  
+					t_final = 600000.0;  
 				}
 			}
 			else{
-				t_final = 1000000.0; // Necesitamos más tiempo para las etas pequeñas para que podamos asegurar que el sistema ha termalizado.
+				t_final = 3000000.0; // Necesitamos más tiempo para las etas pequeñas para que podamos asegurar que el sistema ha termalizado.
 			}
 			equipartition2(&part, t_final, h, eta, A2, filename);
 

@@ -10,7 +10,7 @@ set yrange [0:0.2]
 
 # Eje X: ventana representativa para ver la dinámica sin que se sature
 # (puedes ajustar el intervalo, por ejemplo [0:2000] o [1000:3000])
-set xrange [0:100000]
+set xrange [0:300000]
 
 
 
@@ -30,10 +30,10 @@ do for [eta in etas] {
             if(A_val == 2.0){
                 set xrange [0:1000000]
             } else {
-                set xrange [0:100000]
+                set xrange [0:300000]
             }
         } else{
-            set xrange [0:1000000]
+            set xrange [0:2000000]
         }
         plot 0.1 dt 2 lc rgb "black", \
             fichero u 3:2 w l lw 2 lc rgb "red" title "<Ec> Cinética (Cumple Equipartición)", \

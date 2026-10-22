@@ -1,7 +1,7 @@
 set terminal pngcairo enhanced font "sans,11" size 900, 650
 
 # Eje X: inicio automatico (*), maximo fijado en 10000
-set xrange [*:15000]
+set xrange [*:300000]
 
 # Eje Y: fijado entre 0 y 1.5 para contener explosiones de Euler-Maruyama
 set yrange [0:1.5]
