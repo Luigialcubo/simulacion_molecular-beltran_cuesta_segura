@@ -33,6 +33,6 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 //Para el segundo sistema, ya con Verlet fijo
 void equipartition2( Particle1D *part, double t_final, double h, double eta, double A, const char* file);
 //Simulacion con F=cte
-void simulacion_fuerza_constante(Particle1D *part, double t_final, double h, double eta, double A);
+void simular_fuerza_constante(Particle1D *part, double t_final, double h, double eta, double A);
 
 

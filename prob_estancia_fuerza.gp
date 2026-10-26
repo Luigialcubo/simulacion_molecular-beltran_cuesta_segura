@@ -9,7 +9,7 @@ set xlabel "Fuerza externa F_{ext}" font "sans-bold,11"
 set ylabel "Probabilidad P" font "sans-bold,11"
 
 # Rango de probabilidad acotado entre 0 y 1
-set xrange [-0.35:0.35]
+set xrange [-1:1]
 set yrange [-0.05:1.05]
 
 # Configuración de leyenda
