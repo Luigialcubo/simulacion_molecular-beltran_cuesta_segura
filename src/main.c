@@ -87,5 +87,6 @@ int main(void) {
 			printf("Simulacion completada eta=%.2f A=%.1f\n", eta, A2);
 		}
 	}
+	simular_fuerza_constante(&part, 600000.0, h, 1.0, 1.0);
 	return 0;
 }

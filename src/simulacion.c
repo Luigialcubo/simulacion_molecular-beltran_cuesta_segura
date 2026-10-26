@@ -241,3 +241,50 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 	fprintf(f_o, "%f %f", frac_pos, frac_neg); 	
 	fclose(f_o);
 }
+
+void simular_fuerza_constante( Particle1D *part, double t_final, double h, double eta, double A) {
+	FILE* f_out = fopen("resultados/fuerza_cte.dat", "w");
+	if (!f_out) {
+		printf("Error al abrir el archivo\n");
+		return;
+	}
+
+	fprintf(f_out, "# F_ext\tP_pos(x>0)\tP_neg(x<0)\n");
+
+	// Vector de fuerzas externas a explorar
+	double fuerzas[] = { -0.30, -0.20, -0.15, -0.10, -0.05, -0.02, 0.00, 0.02, 0.05, 0.10, 0.15, 0.20, 0.30 };
+	int n_fuerzas = 13;
+
+	long long pasos_prod = (long long)(t_final / h);
+
+	for (int k = 0; k < n_fuerzas; k++) {
+		double F_ext = fuerzas[k];
+
+		part->x = 0.0; // Arrancamos en la cima para no sesgar
+		part->p = 0.0;
+
+
+		//Fase de medida de ocupación
+		long long count_pos = 0;
+		long long count_neg = 0;
+
+		for (long long s = 0; s < pasos_prod; s++) {
+			step_verlet_gjf_fuerza(part, eta, h, A, F_ext);
+
+			if (part->x >= 0.0) {
+				count_pos++;
+			}
+			else {
+				count_neg++;
+			}
+		}
+
+		double P_pos = (double)count_pos / (double)pasos_prod;
+		double P_neg = (double)count_neg / (double)pasos_prod;
+
+		fprintf(f_out, "%f\t%f\t%f\n", F_ext, P_pos, P_neg);
+		printf("   [F = %+.2f] P(x>0) = %.4f | P(x<0) = %.4f\n", F_ext, P_pos, P_neg);
+	}
+
+	fclose(f_out);
+}

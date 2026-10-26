@@ -107,3 +107,37 @@ void step_verlet_gjf2(Particle1D *part, double eta, double h, double A) {
     part->x = x_next;
     part->p = p_next;
 }
+
+void step_verlet_gjf_fuerza(Particle1D* part, double eta, double h, double A, double F_ext) {
+    // Parámetros propios del método Gronbech-Jensen:
+    // a = (1 - (eta*h)/(2m)) / (1 + (eta*h)/(2m))
+    // b = 1 / (1 + (eta*h)/(2m))
+    double gamma_val = (eta * h) / (2.0 * MASS);
+    double a = (1.0 - gamma_val) / (1.0 + gamma_val);
+    double b = 1.0 / (1.0 + gamma_val);
+
+    //Pedimos un numero aleatorio gaussiano
+    double Z = rand_gaussian();
+
+    // <beta^2> = 2 * eta * m * kB*T * h
+    double beta_stoch = sqrt(2.0 * eta * MASS * KB_T * h) * Z;
+
+    // Fuerza determinista en x_n con fuerza externa F_ext
+    double x = part->x;
+    double p = part->p;
+    double f_x = -4.0 * A * x * (x * x - 1.0) + F_ext;
+
+    // 1. Actualizar posición x^{n+1}
+    double x_next = x + (b * h / MASS) * p
+        + (b * h * h / (2.0 * MASS)) * f_x
+        + (b * h / (2.0 * MASS)) * beta_stoch;
+
+    // Fuerza evaluada en la nueva posición x^{n+1}
+    double f_next = -4.0 * A * x_next * (x_next * x_next - 1.0) + F_ext;
+
+    // 2. Actualizar momento p^{n+1}
+    double p_next = a * p + (h / 2.0) * (a * f_x + f_next) + b * beta_stoch;
+
+    part->x = x_next;
+    part->p = p_next;
+}

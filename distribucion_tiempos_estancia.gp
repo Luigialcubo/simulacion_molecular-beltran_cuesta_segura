@@ -24,6 +24,7 @@ tau_exp  = STATS_mean
 peso     = 1.0 / (N_saltos * binwidth)
 
 # 3. Dibujar el histograma experimental
+set logscale y
 plot archivo using (bin($1, binwidth)):(peso) smooth frequency with boxes \
          lc rgb "#4169e1" fill solid 0.5 border lc rgb "#1c3b82" \
          title sprintf("Simulación (<{/Symbol t}>_{exp} = %.2f)", tau_exp)
