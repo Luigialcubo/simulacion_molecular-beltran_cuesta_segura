@@ -42,7 +42,7 @@ int main(void) {
 	}
 	*/
 
-
+	/*
 	// Segundo objetivo
 	FLAG = 2; // Verlet
 	double h = 0.01;
@@ -87,5 +87,39 @@ int main(void) {
 			printf("Simulacion completada eta=%.2f A=%.1f\n", eta, A2);
 		}
 	}
+	simular_fuerza_constante(&part, 600000.0, h, 1.0, 1.0);
+	*/
+	//Tercer objetivo
+
+	double h = 0.01;
+	double t_final;
+	int N[]= {4, 8, 16, 32, 64};
+	double eta=0.1;
+	for(int i=0;i<len(N);i++){ //Un primer bucle para ir en todos los valores de N
+		int Nact=N[i];
+		Particle3D polymer[Nact];
+		//Iniciamos el polímero.
+		for(int j=0;j<Nact;j++){
+			for(int k;k<3;k++){
+				polymer[j].r[k]=0;
+				polymer[j].p[k]=0;
+				polymer[j].f[k]=0;
+			}
+		}
+		
+		// Termalización
+			long long pasos_termalizacion = 300000; // Pasos previos sin fprintf
+			for (long long step = 0; step < pasos_termalizacion; step++) {
+				// Llamas al paso de integración del doble pozo
+				step_verlet_gjf_polymer(polymer, eta, h, Nact);
+			}
+
+	}
+	
+
+
+
+
+
 	return 0;
 }

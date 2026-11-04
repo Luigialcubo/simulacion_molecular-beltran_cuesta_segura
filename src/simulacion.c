@@ -241,3 +241,110 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 	fprintf(f_o, "%f %f", frac_pos, frac_neg); 	
 	fclose(f_o);
 }
+
+void simular_fuerza_constante( Particle1D *part, double t_final, double h, double eta, double A) {
+	FILE* f_out = fopen("resultados/fuerza_cte.dat", "w");
+	if (!f_out) {
+		printf("Error al abrir el archivo\n");
+		return;
+	}
+
+	fprintf(f_out, "# F_ext\tP_pos(x>0)\tP_neg(x<0)\n");
+
+	// Vector de fuerzas externas a explorar
+	double fuerzas[] = {-1.00, -0.90, -0.80, -0.70, -0.60, -0.50, -0.40, -0.30, -0.20, -0.15, -0.10, -0.05, -0.02, 0.00, 0.02, 0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00};
+	int n_fuerzas = 27;
+
+	long long pasos_prod = (long long)(t_final / h);
+
+	for (int k = 0; k < n_fuerzas; k++) {
+		double F_ext = fuerzas[k];
+
+		part->x = 0.0; // Arrancamos en la cima para no sesgar
+		part->p = 0.0;
+
+
+		//Fase de medida de ocupación
+		long long count_pos = 0;
+		long long count_neg = 0;
+
+		for (long long s = 0; s < pasos_prod; s++) {
+			step_verlet_gjf_fuerza(part, eta, h, A, F_ext);
+
+			if (part->x >= 0.0) {
+				count_pos++;
+			}
+			else {
+				count_neg++;
+			}
+		}
+
+		double P_pos = (double)count_pos / (double)pasos_prod;
+		double P_neg = (double)count_neg / (double)pasos_prod;
+
+		fprintf(f_out, "%f\t%f\t%f\n", F_ext, P_pos, P_neg);
+		printf("   [F = %+.2f] P(x>0) = %.4f | P(x<0) = %.4f\n", F_ext, P_pos, P_neg);
+	}
+
+	fclose(f_out);
+}
+
+double momento2(Particle3D *polymer, int i){
+	double p_x = polymer[i].p[0];
+    double p_y = polymer[i].p[1];
+    double p_z = polymer[i].p[2];
+
+	return p_x * p_x + p_y * p_y + p_z * p_z;
+}
+
+void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N){
+	// 1. Inicialización de variables
+	double t = 0.0;
+	double sum_T = 0.0;
+	double sum_Ep = 0.0;
+	int npasos;
+
+	// Algoritmo para guardar pasos (igual que en equipartition)
+	long long pasos_entre_guardados = (long long)(0.5 / h);
+	if (pasos_entre_guardados < 1) {
+		pasos_entre_guardados = 1;
+	}
+
+	// Apertura del archivo de resultados
+	FILE* g = fopen(file, "w");
+	if (!g) {
+		printf("Error al abrir el archivo: %s\n", file);
+		return;
+	}
+	while (t < t_final) {
+		npasos++;
+		//Calculamos la energía potencial:
+		for(int i=0;i<N-1;i++){
+			int j=i+1;
+			//Vector distancia r_ij = r_i - r_j
+    		double r_x = polymer[i].r[0] - polymer[j].r[0];
+        	double r_y = polymer[i].r[1] - polymer[j].r[1];
+        	double r_z = polymer[i].r[2] - polymer[j].r[2];
+        	double dist = sqrt(r_x * r_x + r_y * r_y + r_z * r_z);
+			double momento2=momento(polymer,i);
+			sum_Ep += 1/2*K_SPRING*(dist-B_LEN)*(dist-B_LEN);
+			sum_T += momento2/(2 * MASS);
+		}
+		sum_T += momento(polymer,N-1);
+
+		double Ep_promedio = sum_Ep/((double) npasos * N);
+		double T_promedio = sum_T/((double) npasos * N);
+
+		// Guardar solo cuando toque
+		if (npasos % pasos_entre_guardados == 0) {
+			fprintf(g, "%f %f %f %f %f %f %f %f %f\n", Ep_promedio, T_promedio, t, polymer->r[0], polymer->r[1], polymer->r[2]
+			, polymer->p[0], polymer->p[1], polymer->p[2]);
+		}
+			
+
+		// Paso de simulación
+		step_verlet_gjf_polymer(polymer, eta, h, N);
+		t += h;
+	}
+
+}
