@@ -39,19 +39,18 @@ int main(void) {
 				printf("Simulacion completada con algortmo %d eta=%.1f h=%.4f\n", FLAG, eta, h);
 			}
 		}
-	}
-	*/
+	}*/
 
-	/*
+	
 	// Segundo objetivo
 	FLAG = 2; // Verlet
 	double h = 0.01;
 	double t_final;
 
-	double etas2[] = { 0.01, 0.1, 1.0, 5.0 };
+	double etas2[] = { 0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 3.0, 4.0, 5.0 };
 	double A[] = { 0.5, 1.0, 2.0 };
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 19; i++) {
 		for (int j = 0; j < 3; j++) {
 			double eta = etas2[i];
 			double A2 = A[j];
@@ -66,7 +65,7 @@ int main(void) {
 				// Llamas al paso de integración del doble pozo
 				step_verlet_gjf2(&part, eta, h, A2);
 			}
-
+			
 			// Nombre de archivo único que incluye eta y A
 			sprintf(filename, "resultados/doblepozo_eta%.2f_A%.1f.dat", eta, A2);
 
@@ -76,7 +75,7 @@ int main(void) {
 					t_final = 1000000.0;  // Grande para que atraviese más la barrera
 				}
 				else {
-					t_final = 600000.0;  
+					t_final = 600000.0;
 				}
 			}
 			else{
@@ -86,10 +85,13 @@ int main(void) {
 
 			printf("Simulacion completada eta=%.2f A=%.1f\n", eta, A2);
 		}
+		}
+		simular_fuerza_constante(&part, 600000.0, h, 1.0, 1.0);
+		return 0;
 	}
-	simular_fuerza_constante(&part, 600000.0, h, 1.0, 1.0);
-	*/
-	//Tercer objetivo
+
+
+	/* //Tercer objetivo
 
 	double h = 0.01;
 	double t_final;
@@ -123,3 +125,4 @@ int main(void) {
 
 	return 0;
 }
+*/

@@ -3,7 +3,7 @@ set encoding utf8
 set terminal qt font "sans,11"
 
 # 2. Etiquetas limpias con símbolos griegos correctos
-set title "Tiempo Medio de Estancia frente al Amortiguamiento (A = 1.0)"
+set title "Tiempo Medio de Estancia frente al Amortiguamiento (A = 0.5)"
 set xlabel "Amortiguamiento {/Symbol h}"
 set ylabel "Tiempo medio <{/Symbol t}>({/Symbol h})"
 set grid
@@ -16,6 +16,6 @@ set xrange [-0.2 : 5.3]
 set yrange [250 : 1100]
 
 # 4. Trazar ÚNICAMENTE PUNTOS (with points en vez de with linespoints)
-plot 'resultados/tiempos_medios(eta)_A=1.0.txt' using 1:2 with points \
+plot 'tiempos_medios(eta)_A=0.5.txt' using 1:2 with points \
      pt 7 ps 1.8 lc rgb "#1c3b82" \
-     title "Simulación (A = 1.0)"
+     title "Simulación (A = 0.5)"

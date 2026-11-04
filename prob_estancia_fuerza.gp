@@ -1,26 +1,28 @@
-set terminal pngcairo enhanced font "sans,11" size 800, 500
-set output "plots objetivo 2/probabilidades_fuerza.png"
+set terminal pngcairo enhanced font "sans,11" size 850, 500
+set output "probabilidad_ocupacion_vs_fuerza.png"
 
-set grid back lc rgb "#e6e6e6" lt 1 lw 1
-set border 31 lc rgb "#333333" lw 1
+set title "Probabilidad de ocupación en función de la fuerza externa F_{ext}"
+set xlabel "Fuerza externa F_{ext}"
+set ylabel "Probabilidad P"
+set grid
+set xrange [-1.0 : 1.0]
+set yrange [-0.05 : 1.05]
+set key outside top center horizontal box opaque
 
-set title "Probabilidad de ocupación en función de la fuerza externa F_{ext}" font "sans-bold,12"
-set xlabel "Fuerza externa F_{ext}" font "sans-bold,11"
-set ylabel "Probabilidad P" font "sans-bold,11"
+# 1. Definición de las curvas teóricas (con kbT = 0.2 y x_0 = 1.0)
+kbT = 0.2
+P_der_teor(f) = 1.0 / (1.0 + exp(-2.0 * f / kbT))
+P_izq_teor(f) = 1.0 / (1.0 + exp(+2.0 * f / kbT))
 
-# Rango de probabilidad acotado entre 0 y 1
-set xrange [-1:1]
-set yrange [-0.05:1.05]
+# Línea discontinua de referencia en P = 0.5
+set arrow from -1.0, 0.5 to 1.0, 0.5 nohead dt 2 lc rgb "#888888"
 
-# Configuración de leyenda
-set key top left box lc rgb "#cccccc" spacing 1.3
+# 2. Archivo de datos (columna 1: F_ext, col 2: P(x>0), col 3: P(x<0))
+archivo = "resultados/fuerza_cte.dat"
 
-# Línea discontinua de simetría en P = 0.5
-set arrow 1 from -0.35, 0.5 to 0.35, 0.5 nohead lc rgb "#aaaaaa" dt 2 lw 1
-
-fichero = "resultados/fuerza_cte.dat"
-
-plot fichero using 1:2 title "P(x > 0) [Pozo derecho]" with linespoints pt 7 ps 0.8 lw 1.5 lc rgb "#1b9e77", \
-     fichero using 1:3 title "P(x < 0) [Pozo izquierdo]" with linespoints pt 7 ps 0.8 lw 1.5 lc rgb "#d95f02"
+plot P_der_teor(x) with lines lw 2 lc rgb "#1b9e77" title "Teoría P(x > 0)", \
+     P_izq_teor(x) with lines lw 2 lc rgb "#d95f02" title "Teoría P(x < 0)", \
+     archivo using 1:2 with points pt 7 ps 1.3 lc rgb "#0e664d" title "Simulación P(x > 0)", \
+     archivo using 1:3 with points pt 7 ps 1.3 lc rgb "#a63603" title "Simulación P(x < 0)"
 
 set output

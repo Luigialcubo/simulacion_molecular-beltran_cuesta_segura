@@ -252,7 +252,7 @@ void simular_fuerza_constante( Particle1D *part, double t_final, double h, doubl
 	fprintf(f_out, "# F_ext\tP_pos(x>0)\tP_neg(x<0)\n");
 
 	// Vector de fuerzas externas a explorar
-	double fuerzas[] = {-1.00, -0.90, -0.80, -0.70, -0.60, -0.50, -0.40, -0.30, -0.20, -0.15, -0.10, -0.05, -0.02, 0.00, 0.02, 0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00};
+	double fuerzas[] = {-1.00, -0.90, -0.80, -0.70, -0.60, -0.50, -0.40, -0.30, -0.20, -0.15, -0.10, -0.05,0.00, 0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00};
 	int n_fuerzas = 27;
 
 	long long pasos_prod = (long long)(t_final / h);
@@ -297,6 +297,7 @@ double momento2(Particle3D *polymer, int i){
 	return p_x * p_x + p_y * p_y + p_z * p_z;
 }
 
+/*
 void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N){
 	// 1. Inicialización de variables
 	double t = 0.0;
@@ -348,3 +349,4 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	}
 
 }
+*/

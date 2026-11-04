@@ -183,7 +183,7 @@ void compute_polymer_forces(Particle3D* polymer, int N) {
     }
 }
 
-
+/*
 void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h, int N) {
     //Parámetros propios del método Gronbech-Jensen:
     //a = (1 - (eta*h)/(2m)) / (1 + (eta*h)/(2m))
@@ -227,3 +227,4 @@ void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h, int N) {
         }
     }
 }
+*/
