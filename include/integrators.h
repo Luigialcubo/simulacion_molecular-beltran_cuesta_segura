@@ -19,7 +19,7 @@ void step_verlet_gjf2(Particle1D *part, double eta, double h, double A);
 void step_verlet_gjf_fuerza(Particle1D* part, double eta, double h, double A, double F_ext);
 
 // Calcula la fuerza armónica entre monómeros consecutivos en 3D
-void compute_polymer_forces(Particle3D* polymer);
+void compute_polymer_forces(Particle3D* polymer, int N);
 
 //Verlet Explícito Estocástico para un polímero
-void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h);
+void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h, int N);

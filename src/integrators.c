@@ -146,7 +146,7 @@ void step_verlet_gjf_fuerza(Particle1D* part, double eta, double h, double A, do
 
 
 //Calcula la fuerza armónica entre monómeros consecutivos en 3D
-void compute_polymer_forces(Particle3D* polymer) {
+void compute_polymer_forces(Particle3D* polymer, int N) {
     //Reiniciamos las fuerzas a cero
     for (int i = 0; i < N; i++) {
         polymer[i].f[0] = 0.0;
@@ -184,7 +184,7 @@ void compute_polymer_forces(Particle3D* polymer) {
 }
 
 
-void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h) {
+void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h, int N) {
     //Parámetros propios del método Gronbech-Jensen:
     //a = (1 - (eta*h)/(2m)) / (1 + (eta*h)/(2m))
     //b = 1 / (1 + (eta*h)/(2m))
@@ -196,7 +196,7 @@ void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h) {
     double sigma_beta = sqrt(2.0 * eta * MASS * KB_T * h);
 
     //Calculamos las fuerzas
-    compute_polymer_forces(polymer);
+    compute_polymer_forces(polymer,N);
 
     double beta[N][3];
 
@@ -219,7 +219,7 @@ void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h) {
     }
 
     //Recalculamos las fuerzas en las nuevas posiciones r^{n+1}
-    compute_polymer_forces(polymer);
+    compute_polymer_forces(polymer,N);
 
     for (int i = 0; i < N; i++) {
         for (int d = 0; d < 3; d++) {

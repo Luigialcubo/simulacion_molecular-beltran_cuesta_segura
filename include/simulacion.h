@@ -6,11 +6,10 @@
 
 //Parametros fijos
 #define MASS 1.0
-#define K_SPRING 1.0
-#define KB_T 0.2
+#define K_SPRING 100
+#define KB_T 1.0
 #define PI 3.141592653589793238
-#define B_LEN 1.0
-#define N 16
+#define B_LEN 1.0 
 
 extern int FLAG; //Método empleado (Euler-Maruyama (flag=0), Runge-Kutta (flag=1), Verlet explicito(flag=2)).
 
@@ -43,5 +42,8 @@ void equipartition( Particle1D *part, double t_final, double h, double eta, cons
 void equipartition2( Particle1D *part, double t_final, double h, double eta, double A, const char* file);
 //Simulacion con F=cte
 void simular_fuerza_constante(Particle1D *part, double t_final, double h, double eta, double A);
-
+//Funcion para calcular momentos
+double momento(Particle3D *polymer, int i);
+//Simulacion del 3er objetivo
+void objetivo3(Particle3D *polymer,double t_final, double h, double eta, const char* file, int N);
 
