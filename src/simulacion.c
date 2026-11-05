@@ -297,13 +297,13 @@ double momento2(Particle3D *polymer, int i){
 	return p_x * p_x + p_y * p_y + p_z * p_z;
 }
 
-/*
+
 void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N){
 	// 1. Inicialización de variables
 	double t = 0.0;
 	double sum_T = 0.0;
 	double sum_Ep = 0.0;
-	int npasos;
+	long long npasos=0;
 
 	// Algoritmo para guardar pasos (igual que en equipartition)
 	long long pasos_entre_guardados = (long long)(0.5 / h);
@@ -320,26 +320,29 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	while (t < t_final) {
 		npasos++;
 		//Calculamos la energía potencial:
-		for(int i=0;i<N-1;i++){
-			int j=i+1;
-			//Vector distancia r_ij = r_i - r_j
-    		double r_x = polymer[i].r[0] - polymer[j].r[0];
-        	double r_y = polymer[i].r[1] - polymer[j].r[1];
-        	double r_z = polymer[i].r[2] - polymer[j].r[2];
-        	double dist = sqrt(r_x * r_x + r_y * r_y + r_z * r_z);
-			double momento2=momento(polymer,i);
-			sum_Ep += 1/2*K_SPRING*(dist-B_LEN)*(dist-B_LEN);
-			sum_T += momento2/(2 * MASS);
-		}
-		sum_T += momento(polymer,N-1);
+		double Ep_inst = 0.0;
+		for (int i = 0; i < N - 1; i++) {
+			int j = i + 1;
+			double r_x = polymer[i].r[0] - polymer[j].r[0];
+			double r_y = polymer[i].r[1] - polymer[j].r[1];
+			double r_z = polymer[i].r[2] - polymer[j].r[2];
+			double dist = sqrt(r_x * r_x + r_y * r_y + r_z * r_z);
 
-		double Ep_promedio = sum_Ep/((double) npasos * N);
+			Ep_inst += 0.5 * K_SPRING * (dist - B_LEN) * (dist - B_LEN);
+		}
+		//Calculamos la energía cinética
+		double Ec_inst = 0.0;
+		for (int i = 0; i < N; i++) {
+			Ec_inst += momento2(polymer, i) / (2.0 * MASS);
+		}
+		sum_Ep += Ep_inst;
+		sum_T += Ec_inst;
+		double Ep_promedio = sum_Ep/((double) npasos * (N-1));
 		double T_promedio = sum_T/((double) npasos * N);
 
 		// Guardar solo cuando toque
 		if (npasos % pasos_entre_guardados == 0) {
-			fprintf(g, "%f %f %f %f %f %f %f %f %f\n", Ep_promedio, T_promedio, t, polymer->r[0], polymer->r[1], polymer->r[2]
-			, polymer->p[0], polymer->p[1], polymer->p[2]);
+			fprintf(g, "%f %f %f\n", t, T_promedio, Ep_promedio);
 		}
 			
 
@@ -349,4 +352,3 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	}
 
 }
-*/

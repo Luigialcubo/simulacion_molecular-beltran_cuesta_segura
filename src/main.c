@@ -41,7 +41,7 @@ int main(void) {
 		}
 	}*/
 
-	
+/*
 	// Segundo objetivo
 	FLAG = 2; // Verlet
 	double h = 0.01;
@@ -90,39 +90,46 @@ int main(void) {
 		return 0;
 	}
 
-
-	/* //Tercer objetivo
+	*/
+	 //Tercer objetivo
 
 	double h = 0.01;
-	double t_final;
+	double t_final=60000;
 	int N[]= {4, 8, 16, 32, 64};
 	double eta=0.1;
-	for(int i=0;i<len(N);i++){ //Un primer bucle para ir en todos los valores de N
-		int Nact=N[i];
-		Particle3D polymer[Nact];
+	for(int i=0;i<5;i++){ //Un primer bucle para ir en todos los valores de N
+		const int Nact=N[i];
+		Particle3D polymer[N_MAX];
 		//Iniciamos el polímero.
-		for(int j=0;j<Nact;j++){
-			for(int k;k<3;k++){
-				polymer[j].r[k]=0;
-				polymer[j].p[k]=0;
-				polymer[j].f[k]=0;
-			}
+		for (int j = 0; j < Nact; j++) {
+			polymer[j].r[0] = j * B_LEN; // extendido en el eje x con distancia entre particulas b_len
+			polymer[j].r[1] = 0.0;
+			polymer[j].r[2] = 0.0;
+
+			polymer[j].p[0] = 0.0;
+			polymer[j].p[1] = 0.0;
+			polymer[j].p[2] = 0.0;
+
+			polymer[j].f[0] = 0.0;
+			polymer[j].f[1] = 0.0;
+			polymer[j].f[2] = 0.0;
 		}
 		
 		// Termalización
-			long long pasos_termalizacion = 300000; // Pasos previos sin fprintf
+			long long pasos_termalizacion = 50000; // Pasos previos sin fprintf
 			for (long long step = 0; step < pasos_termalizacion; step++) {
 				// Llamas al paso de integración del doble pozo
 				step_verlet_gjf_polymer(polymer, eta, h, Nact);
 			}
+			//Nombre del archivo
+			sprintf(filename, "resultados/polimero_N%d_eta%.1f.dat", Nact, eta);
+
+			//Simulamos
+			objetivo3(polymer, t_final, h, eta, filename, Nact);
+
+			//Guardamos en el archivo
+			printf("Completado N = %d -> Guardado en: %s\n", Nact, filename);
 
 	}
-	
-
-
-
-
-
 	return 0;
 }
-*/
