@@ -45,6 +45,8 @@ void equipartition2( Particle1D *part, double t_final, double h, double eta, dou
 void simular_fuerza_constante(Particle1D *part, double t_final, double h, double eta, double A);
 //Funcion para calcular momentos
 double momento(Particle3D *polymer, int i);
+//Calcular radio de giro
+double radio_de_giro(Particle3D *polymer, double *R_CM, int N);
 //Simulacion del 3er objetivo
 void objetivo3(Particle3D *polymer,double t_final, double h, double eta, const char* file, int N);
 

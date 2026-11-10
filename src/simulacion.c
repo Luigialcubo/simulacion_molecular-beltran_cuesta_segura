@@ -297,12 +297,30 @@ double momento2(Particle3D *polymer, int i){
 	return p_x * p_x + p_y * p_y + p_z * p_z;
 }
 
+double radio_de_giro(Particle3D *polymer, double *R_CM, int N){
+	double r_G = 0.0;
+
+	for (int i = 0; i < N, i++){
+		double dx = polymer[i].r[0] - R_CM[0];
+        double dy = polymer[i].r[1] - R_CM[1];
+        double dz = polymer[i].r[2] - R_CM[2];
+
+		r_G += (dx * dx + dy * dy + dz * dz);
+	}
+
+	r_G /= N;
+
+	return sqrt(r_G);
+}
+
 
 void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N){
 	// 1. Inicialización de variables
 	double t = 0.0;
 	double sum_T = 0.0;
 	double sum_Ep = 0.0;
+	double r_CM[3] = {0.0, 0.0, 0.0};
+	double r_G = 0.0;
 	long long npasos=0;
 
 	// Algoritmo para guardar pasos (igual que en equipartition)
@@ -319,6 +337,13 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	}
 	while (t < t_final) {
 		npasos++;
+		//Reiniciamos el centro de masas y el radio de giro a 0
+		r_CM[0] = 0.0;
+		r_CM[1] = 0.0;
+		r_CM[2] = 0.0;
+
+		r_G = 0.0;
+
 		//Calculamos la energía potencial:
 		double Ep_inst = 0.0;
 		for (int i = 0; i < N - 1; i++) {
@@ -340,11 +365,25 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		double Ep_promedio = sum_Ep/((double) npasos * (N-1));
 		double T_promedio = sum_T/((double) npasos * N);
 
+		
+
+		//Calculamos el centro de masas
+		for (int i = 0; i < N; i++) {
+    		r_CM[0] += polymer[i].r[0]; // Suma en X
+    		r_CM[1] += polymer[i].r[1]; // Suma en Y
+    		r_CM[2] += polymer[i].r[2]; // Suma en Z
+		}
+		r_CM[0] /= N;
+		r_CM[1] /= N;
+		r_CM[2] /= N;
+
+		//calculamos el radio de giro
+		r_G = radio_de_giro(polymer, r_CM, N);
+
 		// Guardar solo cuando toque
 		if (npasos % pasos_entre_guardados == 0) {
-			fprintf(g, "%f %f %f\n", t, T_promedio, Ep_promedio);
+			fprintf(g, "%f %f %f %f\n", t, T_promedio, Ep_promedio, r_G);
 		}
-			
 
 		// Paso de simulación
 		step_verlet_gjf_polymer(polymer, eta, h, N);
