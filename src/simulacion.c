@@ -141,6 +141,10 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 	long long count_pos = 0;
 	long long count_neg = 0;
 
+	//Definición energía umbral (Si E < A-Kb_T/2: No tiene energía para superar la barrera y queda atrapada en el pozo, si E > A - Kb_T/2 tiene suficiente energia para superarla y no tiene sentido hablar de partícula atrapada)
+	double E_umbral = A - 0.5 * KB_T;
+
+
 	int estado_actual;
 	if (part->x >= 0.0) {
 		estado_actual = 1;   // Pozo derecho (x >= 0)
@@ -199,16 +203,21 @@ void equipartition2(Particle1D* part, double t_final, double h, double eta, doub
 			count_neg++;
 		}
 
-		// Detección de saltos entre pozos
-		int estado_nuevo=estado_actual;
-		if (part->x >= 0.5) {
-			estado_nuevo = 1;
-		}
-		else {
-			if (part->x <= -0.5)
-			estado_nuevo = -1;
-		}
+		//Definimos la energía actual
+		double E_tot = Ep_inst + T_inst;
 
+		int estado_nuevo = estado_actual;
+		//Si E < A-Kb_T/2: No tiene energía para superar la barrera y queda atrapada en el pozo, si E > A - Kb_T/2 tiene suficiente energia para superarla y no tiene sentido hablar de partícula atrapada 
+		
+		if (E_tot < E_umbral) {
+			// Partícula atrapada
+			if (part->x > 0.0) {
+				estado_nuevo = 1;    // Pozo derecho
+			}
+			else {
+				estado_nuevo = -1;   // Pozo izquierdo
+			}
+		}
 		if (estado_nuevo != estado_actual) {
 			// Si cambia de estado, anotamos donde ha saltado, y el tiempo que ha tardado en saltar.
 			if (t_estancia > 0.0) {
@@ -253,7 +262,7 @@ void simular_fuerza_constante( Particle1D *part, double t_final, double h, doubl
 
 	// Vector de fuerzas externas a explorar
 	double fuerzas[] = {-1.00, -0.90, -0.80, -0.70, -0.60, -0.50, -0.40, -0.30, -0.20, -0.15, -0.10, -0.05,0.00, 0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00};
-	int n_fuerzas = 27;
+	int n_fuerzas = 25;
 
 	long long pasos_prod = (long long)(t_final / h);
 
@@ -300,7 +309,7 @@ double momento2(Particle3D *polymer, int i){
 double radio_de_giro(Particle3D *polymer, double *R_CM, int N){
 	double r_G = 0.0;
 
-	for (int i = 0; i < N, i++){
+	for (int i = 0; i < N; i++) {
 		double dx = polymer[i].r[0] - R_CM[0];
         double dy = polymer[i].r[1] - R_CM[1];
         double dz = polymer[i].r[2] - R_CM[2];

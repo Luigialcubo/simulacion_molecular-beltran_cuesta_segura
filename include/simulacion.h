@@ -7,7 +7,7 @@
 //Parametros fijos
 #define MASS 1.0
 #define K_SPRING 100
-#define KB_T 1.0
+#define KB_T 0.2
 #define PI 3.141592653589793238
 #define B_LEN 1.0 
 #define N_MAX 64
