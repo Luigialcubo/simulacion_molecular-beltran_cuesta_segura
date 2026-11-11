@@ -8,7 +8,7 @@ int FLAG = 0;
 int main(void) {
 	init_random();
 	char filename[100];
-	Particle1D part;
+	//Particle1D part;
 	//int i, j;
 
 	//double etas[] = { 0.1, 1.0, 10.0 };
@@ -41,7 +41,7 @@ int main(void) {
 		}
 	}*/
 
-
+	/*
 	// Segundo objetivo
 	FLAG = 2; // Verlet
 	double h = 0.01;
@@ -89,8 +89,8 @@ int main(void) {
 		simular_fuerza_constante(&part, 1000000.0, h, 1.0, 1.0);
 		return 0;
 	}
-
-	/*
+	*/
+	
 	 //Tercer objetivo
 
 	double h = 0.01;
@@ -133,4 +133,3 @@ int main(void) {
 	}
 	return 0;
 }
-*/
