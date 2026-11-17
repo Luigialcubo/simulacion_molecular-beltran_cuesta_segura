@@ -131,5 +131,8 @@ int main(void) {
 			printf("Completado N = %d -> Guardado en: %s\n", Nact, filename);
 
 	}
+
+	crear_rg2media();
+
 	return 0;
 }

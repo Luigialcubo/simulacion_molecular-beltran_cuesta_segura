@@ -306,7 +306,7 @@ double momento2(Particle3D *polymer, int i){
 	return p_x * p_x + p_y * p_y + p_z * p_z;
 }
 
-double radio_de_giro(Particle3D *polymer, double *R_CM, int N){
+double radio_de_giro2(Particle3D *polymer, double *R_CM, int N){
 	double r_G = 0.0;
 
 	for (int i = 0; i < N; i++) {
@@ -317,9 +317,9 @@ double radio_de_giro(Particle3D *polymer, double *R_CM, int N){
 		r_G += (dx * dx + dy * dy + dz * dz);
 	}
 
-	r_G /= N;
+	
 
-	return sqrt(r_G);
+	return r_G /= N;
 }
 
 
@@ -329,7 +329,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	double sum_T = 0.0;
 	double sum_Ep = 0.0;
 	double r_CM[3] = {0.0, 0.0, 0.0};
-	double r_G = 0.0;
+	double r_G2 = 0.0;
 	long long npasos=0;
 
 	// Algoritmo para guardar pasos (igual que en equipartition)
@@ -351,7 +351,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		r_CM[1] = 0.0;
 		r_CM[2] = 0.0;
 
-		r_G = 0.0;
+		r_G2 = 0.0;
 
 		//Calculamos la energía potencial:
 		double Ep_inst = 0.0;
@@ -386,12 +386,12 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		r_CM[1] /= N;
 		r_CM[2] /= N;
 
-		//calculamos el radio de giro
-		r_G = radio_de_giro(polymer, r_CM, N);
+		//calculamos el radio de giro cuadrado
+		r_G2 = radio_de_giro2(polymer, r_CM, N);
 
 		// Guardar solo cuando toque
 		if (npasos % pasos_entre_guardados == 0) {
-			fprintf(g, "%f %f %f %f\n", t, T_promedio, Ep_promedio, r_G);
+			fprintf(g, "%f %f %f %f\n", t, T_promedio, Ep_promedio, r_G2);
 		}
 
 		// Paso de simulación
@@ -399,4 +399,71 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		t += h;
 	}
 
+}
+
+void crear_rg2media(void){
+	int tamanos[] = {4, 8, 16, 32, 64};
+    int num_archivos = 5;
+    double t_termalizacion = 10000.0; 
+
+    FILE *fout = fopen("resultados/escala_rg2.dat", "w");
+    if (fout == NULL) {
+        printf("Error al crear el archivo escala_rg2.dat\n");
+        return;
+    }
+
+    fprintf(fout, "# N\t<Rg^2>\t\tError_Rg2\n");
+    printf("# N\t<Rg^2>\t\tError_Rg2\n");
+
+    char nombre_archivo[100];
+    char linea[512];
+
+    for (int k = 0; k < num_archivos; k++) {
+        int N = tamanos[k];
+        sprintf(nombre_archivo, "resultados/polimero_N%d_eta0.1.dat", N);
+
+        FILE *fin = fopen(nombre_archivo, "r");
+        if (fin == NULL) {
+            printf("Aviso: No se pudo abrir %s\n", nombre_archivo);
+            continue;
+        }
+
+        double suma_rg2 = 0.0;
+        double suma_rg2_cuadrado = 0.0;
+        long contador = 0;
+
+        double t, col2, col3, rg2;
+
+        // Leemos línea a línea para evitar problemas si hay cabeceras con '#' o más de 4 columnas
+        while (fgets(linea, sizeof(linea), fin) != NULL) {
+            if (linea[0] == '#' || linea[0] == '\n') continue; // Saltar comentarios o líneas vacías
+
+            if (sscanf(linea, "%lf %lf %lf %lf", &t, &col2, &col3, &rg2) == 4) {
+                if (t >= t_termalizacion) {
+                    suma_rg2 += rg2;
+                    suma_rg2_cuadrado += (rg2 * rg2);
+                    contador++;
+                }
+            }
+        }
+        fclose(fin);
+
+        if (contador > 1) {
+            double media = suma_rg2 / contador;
+            double varianza = (suma_rg2_cuadrado / contador) - (media * media);
+            if (varianza < 0.0) varianza = 0.0; // Protección contra redondeo numérico
+
+            double desviacion_estandar = sqrt(varianza);
+            
+            double error = desviacion_estandar;
+
+            fprintf(fout, "%d\t%.6f\t%.6f\n", N, media, error);
+            printf("%d\t%.6f\t%.6f\n", N, media, error);
+        } else {
+            printf("Aviso: No hay suficientes datos tras t=%.1f en %s\n", t_termalizacion, nombre_archivo);
+        }
+    }
+
+    fclose(fout);
+    printf("\nArchivo 'escala_rg2.dat' generado correctamente.\n");
 }
