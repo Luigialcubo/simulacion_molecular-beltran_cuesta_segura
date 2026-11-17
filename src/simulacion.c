@@ -321,6 +321,13 @@ double radio_de_giro2(Particle3D *polymer, double *R_CM, int N){
 
 	return r_G /= N;
 }
+double radio_ee2(Particle3D *polymer, int N){
+	double dx = polymer[N - 1].r[0] - polymer[0].r[0];
+    double dy = polymer[N - 1].r[1] - polymer[0].r[1];
+    double dz = polymer[N - 1].r[2] - polymer[0].r[2];
+
+	return (dx * dx + dy * dy + dz * dz);
+}
 
 
 void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N){
@@ -330,6 +337,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	double sum_Ep = 0.0;
 	double r_CM[3] = {0.0, 0.0, 0.0};
 	double r_G2 = 0.0;
+	double r_ee2 = 0.0;
 	long long npasos=0;
 
 	// Algoritmo para guardar pasos (igual que en equipartition)
@@ -352,6 +360,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		r_CM[2] = 0.0;
 
 		r_G2 = 0.0;
+		r_ee2 = 0.0;
 
 		//Calculamos la energía potencial:
 		double Ep_inst = 0.0;
@@ -386,12 +395,14 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		r_CM[1] /= N;
 		r_CM[2] /= N;
 
+		//calculamos el ree
+		r_ee2 = radio_ee2(polymer, N);
 		//calculamos el radio de giro cuadrado
 		r_G2 = radio_de_giro2(polymer, r_CM, N);
 
 		// Guardar solo cuando toque
 		if (npasos % pasos_entre_guardados == 0) {
-			fprintf(g, "%f %f %f %f\n", t, T_promedio, Ep_promedio, r_G2);
+			fprintf(g, "%f %f %f %f %f\n", t, T_promedio, Ep_promedio, r_G2, r_ee2);
 		}
 
 		// Paso de simulación
@@ -404,7 +415,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 void crear_rg2media(void){
 	int tamanos[] = {4, 8, 16, 32, 64};
     int num_archivos = 5;
-    double t_termalizacion = 10000.0; 
+    double t_termalizacion = 20000.0; 
 
     FILE *fout = fopen("resultados/escala_rg2.dat", "w");
     if (fout == NULL) {
@@ -430,18 +441,26 @@ void crear_rg2media(void){
 
         double suma_rg2 = 0.0;
         double suma_rg2_cuadrado = 0.0;
+
+		double suma_ree2 = 0.0;
+		double suma_ree2_cuadrado = 0.0;
+
         long contador = 0;
 
-        double t, col2, col3, rg2;
+        double t, col2, col3, rg2, ree2;
 
         // Leemos línea a línea para evitar problemas si hay cabeceras con '#' o más de 4 columnas
         while (fgets(linea, sizeof(linea), fin) != NULL) {
             if (linea[0] == '#' || linea[0] == '\n') continue; // Saltar comentarios o líneas vacías
 
-            if (sscanf(linea, "%lf %lf %lf %lf", &t, &col2, &col3, &rg2) == 4) {
+            if (sscanf(linea, "%lf %lf %lf %lf %lf", &t, &col2, &col3, &rg2, &ree2) == 5) {
                 if (t >= t_termalizacion) {
                     suma_rg2 += rg2;
                     suma_rg2_cuadrado += (rg2 * rg2);
+
+					suma_ree2 += ree2;
+					suma_ree2_cuadrado += (ree2 * ree2);
+
                     contador++;
                 }
             }
@@ -449,16 +468,18 @@ void crear_rg2media(void){
         fclose(fin);
 
         if (contador > 1) {
-            double media = suma_rg2 / contador;
-            double varianza = (suma_rg2_cuadrado / contador) - (media * media);
-            if (varianza < 0.0) varianza = 0.0; // Protección contra redondeo numérico
-
-            double desviacion_estandar = sqrt(varianza);
+            double media_rg2 = suma_rg2 / contador;
+            double var_rg2 = (suma_rg2_cuadrado / contador) - (media_rg2 * media_rg2);
+            if (var_rg2 < 0.0) var_rg2 = 0.0; // Protección contra redondeo numérico
+            double error_rg2 = sqrt(var_rg2);
             
-            double error = desviacion_estandar;
+            double media_ree2 = suma_ree2 / contador;
+            double var_ree2 = (suma_ree2_cuadrado / contador) - (media_ree2 * media_ree2);
+            if (var_ree2 < 0.0) var_ree2 = 0.0; // Protección contra redondeo numérico
+            double error_ree2 = sqrt(var_ree2);
 
-            fprintf(fout, "%d\t%.6f\t%.6f\n", N, media, error);
-            printf("%d\t%.6f\t%.6f\n", N, media, error);
+            fprintf(fout, "%d\t%.6f\t%.6f\t%.6f\t%.6f\n", N, media_rg2, error_rg2, media_ree2, error_ree2);
+            printf("%d\t%.6f\t%.6f\t%.6f\t%.6f\n", N, media_rg2, error_rg2, media_ree2, error_ree2);
         } else {
             printf("Aviso: No hay suficientes datos tras t=%.1f en %s\n", t_termalizacion, nombre_archivo);
         }

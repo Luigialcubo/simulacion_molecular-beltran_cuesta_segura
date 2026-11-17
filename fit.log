@@ -490,3 +490,201 @@ Final set of parameters
 
 a               = -1.63407       
 m               = 0.959692       
+
+
+*******************************************************************************
+Tue Nov 17 19:16:18 2026
+
+
+FIT:    data read from "resultados/escala_rg2.dat" using (log($1)):(log($4))
+        format = x:z
+        x range restricted to [3.00000 : 80.0000]
+        #datapoints = 2
+        residuals are weighted equally (unit weight)
+
+function used for fitting: ajuste(x)
+	ajuste(x) = a + m * x
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             m            
+   0 2.0680490671e+00   0.00e+00  2.80e+00    1.000000e+00   1.000000e+00
+   7 9.8607613153e-31   0.00e+00  2.80e-07    1.528580e-04   9.955351e-01
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 9.86076e-31
+abs. change during last iteration : 0
+
+
+Exactly as many data points as there are parameters.
+In this degenerate case, all errors are zero by definition.
+
+Final set of parameters 
+======================= 
+
+a               = 0.000152858    
+m               = 0.995535       
+
+
+*******************************************************************************
+Tue Nov 17 19:20:42 2026
+
+
+FIT:    data read from "resultados/escala_rg2.dat" using (log($1)):(log($4))
+        format = x:z
+        x range restricted to [3.00000 : 80.0000]
+        #datapoints = 2
+        residuals are weighted equally (unit weight)
+
+function used for fitting: ajuste(x)
+	ajuste(x) = a + m * x
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             m            
+   0 2.0680490671e+00   0.00e+00  2.80e+00    1.000000e+00   1.000000e+00
+   7 9.8607613153e-31   0.00e+00  2.80e-07    1.528580e-04   9.955351e-01
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 9.86076e-31
+abs. change during last iteration : 0
+
+
+Exactly as many data points as there are parameters.
+In this degenerate case, all errors are zero by definition.
+
+Final set of parameters 
+======================= 
+
+a               = 0.000152858    
+m               = 0.995535       
+
+
+*******************************************************************************
+Tue Nov 17 19:32:43 2026
+
+
+FIT:    data read from "resultados/escala_rg2.dat" using (log($1)):(log($4))
+        format = x:z
+        x range restricted to [3.00000 : 80.0000]
+        #datapoints = 2
+        residuals are weighted equally (unit weight)
+
+function used for fitting: ajuste(x)
+	ajuste(x) = a + m * x
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             m            
+   0 2.0867519017e+00   0.00e+00  2.80e+00    1.000000e+00   1.000000e+00
+   7 0.0000000000e+00  -inf       2.80e-07   -2.863404e-01   1.069556e+00
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 0
+abs. change during last iteration : -9.86076e-31
+
+
+Exactly as many data points as there are parameters.
+In this degenerate case, all errors are zero by definition.
+
+Final set of parameters 
+======================= 
+
+a               = -0.28634       
+m               = 1.06956        
+
+
+*******************************************************************************
+Tue Nov 17 19:32:44 2026
+
+
+FIT:    data read from "resultados/escala_rg2.dat" using (log($1)):(log($2))
+        format = x:z
+        x range restricted to [3.00000 : 80.0000]
+        #datapoints = 2
+        residuals are weighted equally (unit weight)
+
+function used for fitting: ajuste(x)
+	ajuste(x) = a + m * x
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             m            
+   0 1.5531100613e+01   0.00e+00  2.80e+00    1.000000e+00   1.000000e+00
+   7 6.4094948549e-31   0.00e+00  2.80e-07   -1.896505e+00   1.028814e+00
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 6.40949e-31
+abs. change during last iteration : 0
+
+
+Exactly as many data points as there are parameters.
+In this degenerate case, all errors are zero by definition.
+
+Final set of parameters 
+======================= 
+
+a               = -1.89651       
+m               = 1.02881        
+
+
+*******************************************************************************
+Tue Nov 17 19:39:41 2026
+
+
+FIT:    data read from "resultados/escala_rg2.dat" using (log($1)):(log($2))
+        format = x:z
+        x range restricted to [3.00000 : 80.0000]
+        #datapoints = 2
+        residuals are weighted equally (unit weight)
+
+function used for fitting: ajuste(x)
+	ajuste(x) = a + m * x
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             m            
+   0 1.5531100613e+01   0.00e+00  2.80e+00    1.000000e+00   1.000000e+00
+   7 6.4094948549e-31   0.00e+00  2.80e-07   -1.896505e+00   1.028814e+00
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 6.40949e-31
+abs. change during last iteration : 0
+
+
+Exactly as many data points as there are parameters.
+In this degenerate case, all errors are zero by definition.
+
+Final set of parameters 
+======================= 
+
+a               = -1.89651       
+m               = 1.02881        
+
+
+*******************************************************************************
+Tue Nov 17 19:39:42 2026
+
+
+FIT:    data read from "resultados/escala_rg2.dat" using (log($1)):(log($4))
+        format = x:z
+        x range restricted to [3.00000 : 80.0000]
+        #datapoints = 2
+        residuals are weighted equally (unit weight)
+
+function used for fitting: ajuste(x)
+	ajuste(x) = a + m * x
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             m            
+   0 2.0867519017e+00   0.00e+00  2.80e+00    1.000000e+00   1.000000e+00
+   7 0.0000000000e+00  -inf       2.80e-07   -2.863404e-01   1.069556e+00
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 0
+abs. change during last iteration : -9.86076e-31
+
+
+Exactly as many data points as there are parameters.
+In this degenerate case, all errors are zero by definition.
+
+Final set of parameters 
+======================= 
+
+a               = -0.28634       
+m               = 1.06956        
