@@ -50,7 +50,7 @@ double radio_de_giro2(Particle3D *polymer, double *R_CM, int N);
 
 double radio_ee2(Particle3D *polymer, int N);
 //Simulacion del 3er objetivo
-void objetivo3(Particle3D *polymer,double t_final, double h, double eta, const char* file, int N);
+void objetivo3(Particle3D *polymer,double t_final, double h, double eta, const char* file, int N, const char* file_xyz);
 
 void crear_rg2media(void);
 

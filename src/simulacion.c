@@ -331,7 +331,7 @@ double radio_ee2(Particle3D *polymer, int N){
 }
 
 
-void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N){
+void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const char* file, int N, const char* file_xyz){
 	// 1. Inicialización de variables
 	double t = 0.0;
 	double sum_T = 0.0;
@@ -351,6 +351,11 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 	FILE* g = fopen(file, "w");
 	if (!g) {
 		printf("Error al abrir el archivo: %s\n", file);
+		return;
+	}
+	FILE* f_xyz = fopen(file_xyz, "w");
+	if (!f_xyz) {
+		printf("Error al abrir el archivo: %s\n", file_xyz);
 		return;
 	}
 	while (t < t_final) {
@@ -404,6 +409,11 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		// Guardar solo cuando toque
 		if (npasos % pasos_entre_guardados == 0) {
 			fprintf(g, "%f %f %f %f %f\n", t, T_promedio, Ep_promedio, r_G2, r_ee2);
+			fprintf(f_xyz, "%d\n",N);
+			fprintf(f_xyz, "Tiempo t = %f\n",t);
+			for(int i=0;i < N; i++){
+				fprintf(f_xyz,"%d %d %d",polymer[i].r[0],polymer[i].r[1],polymer[i].r[2]);
+			}
 		}
 
 		// Paso de simulación
@@ -411,6 +421,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		t += h;
 	}
 	fclose(g);
+	fclose(f_xyz);
 
 }
 

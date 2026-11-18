@@ -8,6 +8,7 @@ int FLAG = 0;
 int main(void) {
 	init_random();
 	char filename[100];
+	char filename_xyz[100];
 	//Particle1D part;
 	//int i, j;
 
@@ -122,9 +123,11 @@ int main(void) {
 			}
 			//Nombre del archivo
 			sprintf(filename, "resultados/polimero_N%d_eta%.1f.dat", Nact, eta);
+			//Nombre del archivo 3D
+			sprintf(filename_xyz, "resultados/polimero_N%d_eta%.1f.dat", Nact, eta);
 
 			//Simulamos
-			objetivo3(polymer, t_final, h, eta, filename, Nact);
+			objetivo3(polymer, t_final, h, eta, filename, Nact, filename_xyz);
 
 			//Guardamos en el archivo
 			printf("Completado N = %d -> Guardado en: %s\n", Nact, filename);
