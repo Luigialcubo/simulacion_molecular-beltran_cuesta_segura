@@ -14,8 +14,8 @@ eta_val = "0.1"
 
 do for [n in tamanos_N] {
     # Nombre de salida dinámico
-    set output sprintf("plots objetivo 3/radiosextremo/radioextremotime_polimero_N%s.png", n)
-    set title sprintf("Radio de giro en Polímero 3D (N = %s, {/Symbol h} = %s)", n, eta_val) font "sans-bold,12"
+    set output sprintf("plots objetivo 3/radiosextremo/radioextremotime_polimero_N%ske1000.png", n)
+    set title sprintf("Radio de giro en Polímero 3D ke1000 (N = %s, {/Symbol h} = %s)", n, eta_val) font "sans-bold,12"
 
     archivo = sprintf("resultados/polimero_N%s_eta%s.dat", n, eta_val)
     set yrange[0: n*5]

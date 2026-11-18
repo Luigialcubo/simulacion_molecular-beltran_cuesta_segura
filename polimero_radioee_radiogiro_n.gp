@@ -1,6 +1,6 @@
 set terminal pngcairo size 950,680 enhanced font "Arial,13"
 
-set title "Comparación de Leyes de Escala: <R_{ee}^2> y <R_G^2> (FJC, k_e = 100)"
+set title "Comparación de Leyes de Escala: <R_{ee}^2> y <R_G^2> (FJC, k_e = 1000)"
 set xlabel "Número de monómeros (N)"
 set ylabel "Distancia cuadrática media"
 
@@ -30,7 +30,7 @@ leyenda_fit_g = sprintf("Ajuste <R_G^2> (2{/Symbol n} = %.3f)", m_g)
 # ==========================================
 # IMAGEN 1: CON FIT
 # ==========================================
-set output "plots objetivo 3/comparacion_Ree2_Rg2_con_fit.png"
+set output "plots objetivo 3/comparacion_Ree2_Rg2_con_fit_ke1000.png"
 
 plot "resultados/escala_rg2.dat" using 1:4 with points pt 7 ps 1.4 lc rgb "#cc0000" title "Simulación <R_{ee}^2>", \
      exp(a_ee) * x**m_ee with lines lw 2 lc rgb "#cc0000" title leyenda_fit_ee, \
@@ -44,7 +44,7 @@ unset output
 # ==========================================
 # IMAGEN 2: SIN FIT (Más limpia visualmente)
 # ==========================================
-set output "plots objetivo 3/comparacion_Ree2_Rg2_sin_fit.png"
+set output "plots objetivo 3/comparacion_Ree2_Rg2_sin_fit_ke1000.png"
 
 plot "resultados/escala_rg2.dat" using 1:4 with points pt 7 ps 1.4 lc rgb "#cc0000" title "Simulación <R_{ee}^2>", \
      teorica_ree2(x) with lines lw 2 dt 2 lc rgb "#cc0000" title "Teórica <R_{ee}^2>: <l^2> N", \

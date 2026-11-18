@@ -1,6 +1,6 @@
 set terminal pngcairo size 900,650 enhanced font "Arial,13"
 
-set title "Ley de escala del Radio de Giro cuadrático medio (FJC, k_e = 100)"
+set title "Ley de escala del Radio de Giro cuadrático medio (FJC, k_e = 1000)"
 set xlabel "Número de monómeros (N)"
 set ylabel "<R_G^2>"
 
@@ -28,7 +28,7 @@ leyenda_fit = sprintf("Ajuste simulación (pendiente 2{/Symbol n} = %.3f)", m)
 # ==========================================
 # IMAGEN 1: CON FIT
 # ==========================================
-set output "plots objetivo 3/radiosgiro/ley_escala_Rg2_con_fit.png"
+set output "plots objetivo 3/radiosgiro/ley_escala_Rg2_con_fit_ke1000.png"
 
 plot "resultados/escala_rg2.dat" using 1:2 with points pt 7 ps 1.4 lw 1.5 lc rgb "#004488" title "Simulación <R_G^2>", \
      exp(a) * x**m with lines lw 2 lc rgb "#004488" title leyenda_fit, \
@@ -40,7 +40,7 @@ unset output
 # ==========================================
 # IMAGEN 2: SIN FIT
 # ==========================================
-set output "plots objetivo 3/radiosgiro/ley_escala_Rg2_sin_fit.png"
+set output "plots objetivo 3/radiosgiro/ley_escala_Rg2_sin_fit_ke1000.png"
 
 plot "resultados/escala_rg2.dat" using 1:2 with points pt 7 ps 1.4 lw 1.5 lc rgb "#004488" title "Simulación <R_G^2>", \
      teorica_recta(x) with lines lw 2 dt 2 lc rgb "#cc0000" title "Teórica asintótica: (<l^2>/6) N^{1.0}" #, \
