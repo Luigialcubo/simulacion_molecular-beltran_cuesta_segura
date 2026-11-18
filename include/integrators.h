@@ -23,3 +23,6 @@ void compute_polymer_forces(Particle3D* polymer, int N);
 
 //Verlet Explícito Estocástico para un polímero
 void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h, int N);
+
+//Verlet Explícito Estocástico para un polímero sometido a fuerza externa en el ultimo monomero
+void step_verlet_gjf_polymer_fuerza(Particle3D* polymer, double eta, double h, int N, double F);

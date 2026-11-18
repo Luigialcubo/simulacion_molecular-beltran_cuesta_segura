@@ -93,11 +93,11 @@ int main(void) {
 	
 	 //Tercer objetivo
 
-	double h = 0.01;
+	double h = 0.005;
 	double t_final=60000;
 	int N[]= {4, 8, 16, 32, 64};
 	double eta=0.1;
-	for(int i=0;i<5;i++){ //Un primer bucle para ir en todos los valores de N
+	for (int i = 0;i<5;i++) { //Un primer bucle para ir en todos los valores de N
 		const int Nact=N[i];
 		Particle3D polymer[N_MAX];
 		//Iniciamos el polímero.
@@ -118,7 +118,6 @@ int main(void) {
 		// Termalización
 			long long pasos_termalizacion = 50000; // Pasos previos sin fprintf
 			for (long long step = 0; step < pasos_termalizacion; step++) {
-				// Llamas al paso de integración del doble pozo
 				step_verlet_gjf_polymer(polymer, eta, h, Nact);
 			}
 			//Nombre del archivo
@@ -133,6 +132,12 @@ int main(void) {
 	}
 
 	crear_rg2media();
+	/*
+	Particle3D polymer[N_MAX];
+	int N_f = 4;
+	sprintf(filename, "resultados/fuerza_N%d_eta%.1f.dat", N_f, eta);
+	simular_polimero_fuerza(polymer, N_f, 60000.0, h, eta, filename);
+	*/
 
 	return 0;
 }

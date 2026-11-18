@@ -3,6 +3,7 @@
 #include "stdio.h"
 
 
+
 // Obtiene los pasos de termalización.
 long long thermalization_steps(double eta, double h, double* t_term) {
 	//Frecuencia angular del sistema
@@ -409,6 +410,7 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		step_verlet_gjf_polymer(polymer, eta, h, N);
 		t += h;
 	}
+	fclose(g);
 
 }
 
@@ -471,15 +473,15 @@ void crear_rg2media(void){
             double media_rg2 = suma_rg2 / contador;
             double var_rg2 = (suma_rg2_cuadrado / contador) - (media_rg2 * media_rg2);
             if (var_rg2 < 0.0) var_rg2 = 0.0; // Protección contra redondeo numérico
-            double error_rg2 = sqrt(var_rg2);
+            double desv_tipica_rg2 = sqrt(var_rg2);
             
             double media_ree2 = suma_ree2 / contador;
             double var_ree2 = (suma_ree2_cuadrado / contador) - (media_ree2 * media_ree2);
             if (var_ree2 < 0.0) var_ree2 = 0.0; // Protección contra redondeo numérico
-            double error_ree2 = sqrt(var_ree2);
+            double desv_tipica_ree2 = sqrt(var_ree2);
 
-            fprintf(fout, "%d\t%.6f\t%.6f\t%.6f\t%.6f\n", N, media_rg2, error_rg2, media_ree2, error_ree2);
-            printf("%d\t%.6f\t%.6f\t%.6f\t%.6f\n", N, media_rg2, error_rg2, media_ree2, error_ree2);
+            fprintf(fout, "%d\t%.6f\t%.6f\t%.6f\t%.6f\n", N, media_rg2, desv_tipica_rg2, media_ree2, desv_tipica_ree2);
+            printf("%d\t%.6f\t%.6f\t%.6f\t%.6f\n", N, media_rg2, desv_tipica_rg2, media_ree2, desv_tipica_ree2);
         } else {
             printf("Aviso: No hay suficientes datos tras t=%.1f en %s\n", t_termalizacion, nombre_archivo);
         }
@@ -487,4 +489,76 @@ void crear_rg2media(void){
 
     fclose(fout);
     printf("\nArchivo 'escala_rg2.dat' generado correctamente.\n");
+}
+
+void simular_polimero_fuerza(Particle3D* polymer, int N, double t_final, double h, double eta, const char* file) {
+	// TODO: array de valores de x = F*b/kBT (el de 17 valores) y su número
+	double x[] = { 0.0, 0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0 };
+	int n_fuerzas = 17;
+
+	// TODO: abrir el archivo de salida y comprobar que se ha abierto
+	FILE* fout = fopen(file, "w");
+	if (fout == NULL) {
+		printf("Error al abrir el archivo: %s\n", file);
+		return;
+	}
+	fprintf(fout, "# x\tF\t<R_x>\text_rel\tL(x)\n");
+
+	for (int j = 0; j < n_fuerzas; j++) {
+		// TODO: pasar de x a F (despeja F de x = F*b/kBT)
+		double F = KB_T * x[j] / B_LEN;
+
+		//Iniciamos el polímero.
+		for (int k = 0; k < N; k++) {
+			polymer[k].r[0] = k * B_LEN; // extendido en el eje x con distancia entre particulas b_len
+			polymer[k].r[1] = 0.0;
+			polymer[k].r[2] = 0.0;
+		
+			polymer[k].p[0] = 0.0;
+			polymer[k].p[1] = 0.0;
+			polymer[k].p[2] = 0.0;
+
+			polymer[k].f[0] = 0.0;
+			polymer[k].f[1] = 0.0;
+			polymer[k].f[2] = 0.0;
+		}
+
+
+		// TODO: termalizar: muchos pasos con step_verlet_gjf_polymer_fuerza, sin medir
+		// Termalización
+		long long pasos_termalizacion = 50000; // Pasos previos sin fprintf
+		for (long long step = 0; step < pasos_termalizacion; step++) {
+			step_verlet_gjf_polymer_fuerza(polymer, eta, h, N, F);
+		}
+
+		// TODO: bucle de medida: en cada paso, avanzar y sumar R_x
+		double t = 0;
+		double suma_Rx = 0.0;
+		long long n_pasos = 0;
+		while (t < t_final) {
+			suma_Rx += polymer[N - 1].r[0] - polymer[0].r[0];
+			n_pasos++;
+			step_verlet_gjf_polymer_fuerza(polymer, eta, h, N, F);
+			t += h;
+		}
+
+		// TODO: <R_x> y extensión relativa <R_x>/((N-1)*b)
+		double Rx_prom = suma_Rx / n_pasos;
+		double L_exp = Rx_prom / ((N - 1) * B_LEN);
+
+		// TODO: valor teórico L(x) = coth(x) - 1/x
+		double langevin = 0.0;
+		if (x[j] > 1e-6) {
+			langevin = 1.0 / tanh(x[j]) - 1.0 / x[j];
+		}
+
+		// TODO: escribir una línea en el archivo: x, F, <R_x>, extensión, L(x)
+		fprintf(fout, "%f\t%f\t%f\t%f\t%f\n", x[j], F, Rx_prom, L_exp, langevin);
+		printf("x = %5.2f  F = %6.3f  <R_x> = %8.4f  ext = %.4f  L(x) = %.4f\n", x[j], F, Rx_prom, L_exp, langevin);
+	}
+
+	// TODO: cerrar el archivo
+	fclose(fout);
+
+
 }

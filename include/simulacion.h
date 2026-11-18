@@ -6,8 +6,8 @@
 
 //Parametros fijos
 #define MASS 1.0
-#define K_SPRING 100
-#define KB_T 0.2
+#define K_SPRING 1000
+#define KB_T 1.0
 #define PI 3.141592653589793238
 #define B_LEN 1.0 
 #define N_MAX 64
@@ -44,7 +44,7 @@ void equipartition2( Particle1D *part, double t_final, double h, double eta, dou
 //Simulacion con F=cte
 void simular_fuerza_constante(Particle1D *part, double t_final, double h, double eta, double A);
 //Funcion para calcular momentos
-double momento(Particle3D *polymer, int i);
+double momento2(Particle3D *polymer, int i);
 //Calcular radio de giro
 double radio_de_giro2(Particle3D *polymer, double *R_CM, int N);
 
@@ -54,3 +54,4 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta, const c
 
 void crear_rg2media(void);
 
+void simular_polimero_fuerza(Particle3D* polymer, int N, double t_final, double h, double eta, const char* file);

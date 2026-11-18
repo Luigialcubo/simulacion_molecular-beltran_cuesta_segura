@@ -227,3 +227,53 @@ void step_verlet_gjf_polymer(Particle3D* polymer, double eta, double h, int N) {
         }
     }
 }
+
+
+//Verlet GJF para el polímero con fuerza externa F (eje x) sobre el último monómero.
+//El monómero 0 está fijo (no se actualizan ni su posición ni su momento).
+void step_verlet_gjf_polymer_fuerza(Particle3D* polymer, double eta, double h, int N, double F) {
+    //Parámetros propios del método Gronbech-Jensen:
+    //a = (1 - (eta*h)/(2m)) / (1 + (eta*h)/(2m))
+    //b = 1 / (1 + (eta*h)/(2m))
+    double gamma_val = (eta * h) / (2.0 * MASS);
+    double a = (1.0 - gamma_val) / (1.0 + gamma_val);
+    double b = 1.0 / (1.0 + gamma_val);
+
+    //<beta^2> = 2 * eta * m * kB*T * h
+    double sigma_beta = sqrt(2.0 * eta * MASS * KB_T * h);
+
+
+    //Calculamos las fuerzas
+    compute_polymer_forces(polymer, N);
+    polymer[N - 1].f[0] += F;
+
+    double beta[N_MAX][3];
+
+    for (int i = 1; i < N; i++) {
+        for (int d = 0; d < 3; d++) {
+            //Generamos variable gaussiana independiente por coordenada
+            beta[i][d] = sigma_beta * rand_gaussian();
+
+            //Actualización de la coordenada r_i^{n+1}
+            polymer[i].r[d] += b * h * (polymer[i].p[d] / MASS) + (b * h * h / (2.0 * MASS)) * polymer[i].f[d] + (b * h / (2.0 * MASS)) * beta[i][d];
+        }
+    }
+
+    //Almacenamos f^n
+    double f_old[N_MAX][3];
+    for (int i = 0; i < N; i++) {
+        for (int d = 0; d < 3; d++) {
+            f_old[i][d] = polymer[i].f[d];
+        }
+    }
+
+    //Recalculamos las fuerzas en las nuevas posiciones r^{n+1}
+    compute_polymer_forces(polymer, N);
+    polymer[N - 1].f[0] += F;
+
+    for (int i = 1; i < N; i++) {
+        for (int d = 0; d < 3; d++) {
+            polymer[i].p[d] = a * polymer[i].p[d] + (h / 2.0) * (a * f_old[i][d] + polymer[i].f[d]) + b * beta[i][d];
+        }
+    }
+}
