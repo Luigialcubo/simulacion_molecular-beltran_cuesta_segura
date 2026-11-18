@@ -22,9 +22,9 @@ set arrow from -1.0, 0.5 to 1.0, 0.5 nohead dt 2 lc rgb "#888888"
 archivo = "resultados/fuerza_cte.dat"
 
 plot P_der_teor(x) with lines lw 2 lc rgb "#1b9e77" \
-         title "Teoría  P(x>0) = 1 / (1 + e^{-2F_{ext}x_0 / k_BT})", \
+         title "Teoría  P(x>0) = 1 / (1 + e^{-2F_{ext} / k_BT})", \
      P_izq_teor(x) with lines lw 2 lc rgb "#d95f02" \
-         title "Teoría  P(x<0) = 1 / (1 + e^{+2F_{ext}x_0 / k_BT})", \
+         title "Teoría  P(x<0) = 1 / (1 + e^{+2F_{ext} / k_BT})", \
      archivo using 1:2 with points pt 7 ps 1.3 lc rgb "#0e664d" title "Simulación P(x > 0)", \
      archivo using 1:3 with points pt 7 ps 1.3 lc rgb "#a63603" title "Simulación P(x < 0)"
 
