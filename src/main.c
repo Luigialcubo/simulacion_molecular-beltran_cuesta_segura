@@ -124,7 +124,7 @@ int main(void) {
 			//Nombre del archivo
 			sprintf(filename, "resultados/polimero_N%d_eta%.1f.dat", Nact, eta);
 			//Nombre del archivo 3D
-			sprintf(filename_xyz, "resultados/polimero_N%d_eta%.1f.dat", Nact, eta);
+			sprintf(filename_xyz, "resultados/polimero_N%d_eta%.1f.xyz", Nact, eta);
 
 			//Simulamos
 			objetivo3(polymer, t_final, h, eta, filename, Nact, filename_xyz);

@@ -407,12 +407,12 @@ void objetivo3(Particle3D *polymer,double t_final, double h, double eta,const ch
 		r_G2 = radio_de_giro2(polymer, r_CM, N);
 
 		// Guardar solo cuando toque
-		if (npasos % pasos_entre_guardados == 0) {
+		if (npasos % 20 == 0 && npasos < 6000) {
 			fprintf(g, "%f %f %f %f %f\n", t, T_promedio, Ep_promedio, r_G2, r_ee2);
 			fprintf(f_xyz, "%d\n",N);
 			fprintf(f_xyz, "Tiempo t = %f\n",t);
 			for(int i=0;i < N; i++){
-				fprintf(f_xyz,"%d %d %d",polymer[i].r[0],polymer[i].r[1],polymer[i].r[2]);
+				fprintf(f_xyz, "C %f %f %f\n", polymer[i].r[0], polymer[i].r[1], polymer[i].r[2]);
 			}
 		}
 
@@ -503,11 +503,11 @@ void crear_rg2media(void){
 }
 
 void simular_polimero_fuerza(Particle3D* polymer, int N, double t_final, double h, double eta, const char* file) {
-	// TODO: array de valores de x = F*b/kBT (el de 17 valores) y su número
+	//array de valores de x = F*b/kBT (el de 17 valores) y su número
 	double x[] = { 0.0, 0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0 };
 	int n_fuerzas = 17;
 
-	// TODO: abrir el archivo de salida y comprobar que se ha abierto
+	//abrir el archivo de salida y comprobar que se ha abierto
 	FILE* fout = fopen(file, "w");
 	if (fout == NULL) {
 		printf("Error al abrir el archivo: %s\n", file);
@@ -516,7 +516,7 @@ void simular_polimero_fuerza(Particle3D* polymer, int N, double t_final, double 
 	fprintf(fout, "# x\tF\t<R_x>\text_rel\tL(x)\n");
 
 	for (int j = 0; j < n_fuerzas; j++) {
-		// TODO: pasar de x a F (despeja F de x = F*b/kBT)
+		//pasar de x a F (despeja F de x = F*b/kBT)
 		double F = KB_T * x[j] / B_LEN;
 
 		//Iniciamos el polímero.
@@ -535,14 +535,14 @@ void simular_polimero_fuerza(Particle3D* polymer, int N, double t_final, double 
 		}
 
 
-		// TODO: termalizar: muchos pasos con step_verlet_gjf_polymer_fuerza, sin medir
+		//termalizar: muchos pasos con step_verlet_gjf_polymer_fuerza, sin medir
 		// Termalización
 		long long pasos_termalizacion = 50000; // Pasos previos sin fprintf
 		for (long long step = 0; step < pasos_termalizacion; step++) {
 			step_verlet_gjf_polymer_fuerza(polymer, eta, h, N, F);
 		}
 
-		// TODO: bucle de medida: en cada paso, avanzar y sumar R_x
+		//bucle de medida: en cada paso, avanzar y sumar R_x
 		double t = 0;
 		double suma_Rx = 0.0;
 		long long n_pasos = 0;
@@ -553,22 +553,22 @@ void simular_polimero_fuerza(Particle3D* polymer, int N, double t_final, double 
 			t += h;
 		}
 
-		// TODO: <R_x> y extensión relativa <R_x>/((N-1)*b)
+		// <R_x> y extensión relativa <R_x>/((N-1)*b)
 		double Rx_prom = suma_Rx / n_pasos;
 		double L_exp = Rx_prom / ((N - 1) * B_LEN);
 
-		// TODO: valor teórico L(x) = coth(x) - 1/x
+		// valor teórico L(x) = coth(x) - 1/x
 		double langevin = 0.0;
 		if (x[j] > 1e-6) {
 			langevin = 1.0 / tanh(x[j]) - 1.0 / x[j];
 		}
 
-		// TODO: escribir una línea en el archivo: x, F, <R_x>, extensión, L(x)
+		// escribir una línea en el archivo: x, F, <R_x>, extensión, L(x)
 		fprintf(fout, "%f\t%f\t%f\t%f\t%f\n", x[j], F, Rx_prom, L_exp, langevin);
 		printf("x = %5.2f  F = %6.3f  <R_x> = %8.4f  ext = %.4f  L(x) = %.4f\n", x[j], F, Rx_prom, L_exp, langevin);
 	}
 
-	// TODO: cerrar el archivo
+	// cerrar el archivo
 	fclose(fout);
 
 
